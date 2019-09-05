@@ -1,0 +1,13 @@
+{
+  "extends": ["react-app", "prettier", "prettier/react"],
+  "plugins": ["prettier"],
+  "parser": "babel-eslint",
+  "rules": {
+    "no-debugger": "warn",
+    "react/default-props-match-prop-types": "warn",
+    "camelcase": "warn",
+    "no-return-assign": "warn",
+    "object-curly-newline": "warn",
+    "prettier/prettier": "error"
+  }
+}
