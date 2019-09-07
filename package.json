@@ -44,7 +44,7 @@
     "prettier": "^1.18.2",
     "eslint-config-prettier": "^6.2.0",
     "eslint-plugin-prettier": "^3.1.0",
-    "babel-eslint": "^10.0.3",
+    "babel-eslint": "10.0.2",
     "lint-staged": "^9.2.5",
     "@commitlint/cli": "^8.1.0",
     "@commitlint/config-angular": "^8.1.0"
