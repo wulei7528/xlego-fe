@@ -1,4 +1,5 @@
 import dva from 'dva'
+
 import './index.css'
 import router from './router'
 
@@ -9,7 +10,7 @@ const app = dva()
 //app.use({})
 
 // 3. model
-// app.model({})
+app.model(require('./models/company').default)
 
 // 4. router
 app.router(router)
