@@ -1,4 +1,4 @@
-import baseModal from '../core/baseModal'
+import baseModal from '../core/baseModel'
 import _ from 'lodash'
 
 const myModal = {
