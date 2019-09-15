@@ -1,13 +1,18 @@
 import React from 'react'
 import { Router, Route } from 'dva/router'
-import App from './App'
+import dynamic from 'dva/dynamic'
 
 import 'antd/dist/antd.css'
 
 export default function({ history }) {
   return (
     <Router history={history}>
-      <Route path="/" component={App} />
+      <Route
+        path="/"
+        component={dynamic({
+          component: () => import('./App'),
+        })}
+      />
     </Router>
   )
 }

@@ -11,6 +11,7 @@ const app = dva()
 
 // 3. model
 app.model(require('./models/company').default)
+app.model(require('./models/employee').default)
 
 // 4. router
 app.router(router)

@@ -9,6 +9,7 @@ export default {
   state: {
     list: [],
     record: {},
+    loading: {},
   },
   reducers: {
     saveList(state, action) {
@@ -17,13 +18,23 @@ export default {
     saveRecord(state, action) {
       return { ...state, record: action.payload }
     },
+    saveLoading(state, action) {
+      return {
+        ...state,
+        loading: {
+          [action.key]: action.payload,
+        },
+      }
+    },
   },
   effects: {
     *fetchList(action, { call, put }) {
       const ns = getNs(action.type)
 
+      yield put({ type: 'saveLoading', key: 'list', payload: true })
       const list = yield call(axios.get, `/api/${ns}`, { params: action.payload })
       yield put({ type: 'saveList', payload: list })
+      yield put({ type: 'saveLoading', key: 'list', payload: false })
     },
     *getRecord(action, { call, put }) {
       const ns = getNs(action.type)
