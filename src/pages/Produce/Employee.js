@@ -9,12 +9,12 @@ const moduleCnName = '员工'
 
 const columns = [
   {
-    title: '车工名字',
+    title: '车工姓名',
     dataIndex: 'employeeName',
     key: 'employeeName',
   },
   {
-    title: '级别',
+    title: '车工角色',
     dataIndex: 'role',
     key: 'role',
   },
@@ -23,6 +23,16 @@ const columns = [
     dataIndex: 'telephone',
     key: 'telephone',
   },
+  {
+    title: '创建时间',
+    dataIndex: 'createTime',
+    key: 'createTime',
+  },
+  {
+    title: '修改时间',
+    dataIndex: 'updateTime',
+    key: 'updateTime',
+  },
 ]
 
 const queryItems = [
@@ -30,6 +40,24 @@ const queryItems = [
     type: 'input',
     name: 'employeeName',
     displayName: '车工姓名',
+  },
+  {
+    type: 'select',
+    name: 'employeeRole',
+    displayName: '车工角色',
+    selectOptions: [
+      {
+        text: '普通车工',
+        value: '普通车工',
+      },
+      {
+        text: '熟手',
+        value: '熟手',
+      },
+    ],
+    options: {
+      initialValue: '普通车工',
+    },
   },
 ]
 

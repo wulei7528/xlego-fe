@@ -14,8 +14,8 @@ function QueryForm({ form, queryItems = [] }) {
 
     if ((item.type = 'select')) {
       return getFieldDecorator(item.name, item.options)(
-        <Select placeholder={item.placeholder}>
-          {item.options.map(item => (
+        <Select placeholder={item.placeholder} style={{ width: '160px' }}>
+          {(item.selectOptions || []).map(item => (
             <Option value={item.value}>{item.text}</Option>
           ))}
         </Select>
