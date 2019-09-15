@@ -2,7 +2,6 @@ import React, { useEffect } from 'react'
 import { connect } from 'dva'
 
 function Company({ dispatch }) {
-  console.log('sss')
   useEffect(() => {
     dispatch({
       type: 'company/fetchList',

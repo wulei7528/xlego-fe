@@ -24,9 +24,12 @@ export const menuList = [
     ],
   },
   {
-    key: 'staff',
+    key: 'employee',
     title: '员工管理',
-    path: '/staff',
+    path: '/employee',
+    component: dynamic({
+      component: () => import('../pages/Produce/Employee'),
+    }),
   },
   {
     key: 'flow',
