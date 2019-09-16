@@ -1,5 +1,5 @@
 import React from 'react'
-import { Menu } from 'antd'
+import { Menu, Icon } from 'antd'
 
 import NavLink from './NavLink'
 import { menuList } from '../../models/menuData'
@@ -10,7 +10,15 @@ function generateMenu(menuList) {
   return menuList.map(menuItem => {
     if (menuItem.children && menuItem.children.length > 0) {
       return (
-        <SubMenu key={menuItem.key} title={menuItem.title}>
+        <SubMenu
+          key={menuItem.key}
+          title={
+            <span>
+              {menuItem.iconType ? <Icon type={menuItem.iconType} /> : ''}
+              {menuItem.title}
+            </span>
+          }
+        >
           {generateMenu(menuItem.children)}
         </SubMenu>
       )
@@ -18,7 +26,10 @@ function generateMenu(menuList) {
 
     return (
       <MenuItem key={menuItem.key}>
-        <NavLink target={menuItem.path} linkText={menuItem.title} />
+        {menuItem.iconType ? <Icon type={menuItem.iconType} /> : ''}
+        <span>
+          <NavLink target={menuItem.path} linkText={menuItem.title} />
+        </span>
       </MenuItem>
     )
   })
@@ -26,7 +37,7 @@ function generateMenu(menuList) {
 
 function SiderMenu() {
   return (
-    <Menu mode="inline" defaultSelectedKeys={['1']} defaultOpenKeys={['sub1']} style={{ height: '100%' }}>
+    <Menu theme="dark" mode="inline" defaultSelectedKeys={['company']} defaultOpenKeys={['company']} style={{ height: '100%' }}>
       {generateMenu(menuList)}
     </Menu>
   )

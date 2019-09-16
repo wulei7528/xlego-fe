@@ -1,18 +1,24 @@
-import React from 'react'
-import { Row, Col } from 'antd'
+import React, { useState } from 'react'
+import { Row, Col, Icon } from 'antd'
+import { connect } from 'dva'
 
-import NavLink from './NavLink'
 import './HeaderNav.css'
 
-function HeaderNav() {
-  const linkText = '乐高生产管理系统'
+function HeaderNav({ dispatch }) {
+  const [collapsed, setCollapsed] = useState(false)
+
+  function toggle() {
+    setCollapsed(!collapsed)
+    dispatch({
+      type: 'common/saveSiderMenuCollapsed',
+      payload: !collapsed,
+    })
+  }
 
   return (
     <Row>
       <Col span={12}>
-        <div className="header_title">
-          <NavLink target="/" linkText={linkText} />
-        </div>
+        <Icon className="trigger" type={collapsed ? 'menu-unfold' : 'menu-fold'} onClick={toggle} />
       </Col>
       <Col span={12}>
         <div className="header_user">吴磊</div>
@@ -21,4 +27,4 @@ function HeaderNav() {
   )
 }
 
-export default HeaderNav
+export default connect()(HeaderNav)

@@ -10,6 +10,7 @@ const app = dva()
 //app.use({})
 
 // 3. model
+app.model(require('./models/common').default)
 app.model(require('./models/company').default)
 app.model(require('./models/employee').default)
 

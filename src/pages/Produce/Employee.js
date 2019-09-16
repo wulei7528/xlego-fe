@@ -1,8 +1,8 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Card, Table, Modal, Button, Spin, message } from 'antd'
 import { connect } from 'dva'
 
-import QueryForm from './QueryForm'
+import QueryForm from '../../components/Produce/QueryForm'
 
 const moduleName = 'employee'
 const moduleCnName = '员工'
@@ -64,7 +64,6 @@ const queryItems = [
 function Employee({ dispatch, list, loading }) {
   const [modalVisible, setModalVisible] = useState(false)
   const [selectedRows, setSelectedRows] = useState([])
-  const formRef = useRef()
 
   useEffect(() => {
     dispatch({
@@ -77,24 +76,6 @@ function Employee({ dispatch, list, loading }) {
       type: `${moduleName}/fetchList`,
       payload: values,
     })
-  }
-
-  function query() {
-    const form = formRef.current.getForm()
-
-    form.validateFields((err, values) => {
-      if (err) {
-        return
-      }
-
-      queryRecord(values)
-    })
-  }
-
-  function reset() {
-    const form = formRef.current.getForm()
-
-    form.resetFields()
   }
 
   function addRecord() {
@@ -124,29 +105,21 @@ function Employee({ dispatch, list, loading }) {
   }
 
   const rowSelection = {
-    onChange: (selectedRowKeys, selectedRows) => {
-      console.log(`selectedRowKeys: ${selectedRowKeys}`)
+    onChange: (_, selectedRows) => {
       setSelectedRows(selectedRows)
     },
   }
 
   return (
-    <div>
-      <QueryForm queryItems={queryItems} ref={formRef} />
-      <Card style={{ margin: '10px 0' }}>
-        <Button type="primary" style={{ marginRight: '16px' }} onClick={query}>
-          查询
-        </Button>
-        <Button style={{ marginRight: '16px' }} onClick={reset}>
-          重置
-        </Button>
-        <Button type="primary" style={{ marginRight: '16px' }} onClick={addRecord}>
-          新增
-        </Button>
-        <Button onClick={deleteRecord}>删除</Button>
-      </Card>
+    <Card>
+      <QueryForm queryItems={queryItems} addRecord={addRecord} queryRecord={queryRecord} />
+      {selectedRows.length > 0 && (
+        <Card style={{ margin: '10px 0' }}>
+          <Button onClick={deleteRecord}>删除</Button>
+        </Card>
+      )}
       <Spin tip="努力加载中..." spinning={loading.list}>
-        <Table dataSource={list} columns={columns} rowSelection={rowSelection} />
+        <Table dataSource={list} columns={columns} rowSelection={rowSelection} bordered />
       </Spin>
       <Modal
         title={`新增${moduleCnName}`}
@@ -157,7 +130,7 @@ function Employee({ dispatch, list, loading }) {
         okText="确认"
         cancelText="取消"
       ></Modal>
-    </div>
+    </Card>
   )
 }
 

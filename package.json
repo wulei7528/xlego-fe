@@ -12,8 +12,8 @@
     "react-scripts": "3.1.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
@@ -33,23 +33,27 @@
     ]
   },
   "devDependencies": {
-    "husky": "^3.0.5",
-    "eslint-plugin-flowtype": "^4.3.0",
-    "eslint-config-react-app": "^5.0.1",
-    "eslint": "^6.3.0",
-    "eslint-plugin-jsx-a11y": "^6.2.3",
-    "eslint-plugin-import": "^2.18.2",
-    "eslint-plugin-react": "^7.14.3",
-    "@typescript-eslint/eslint-plugin": "^2.1.0",
-    "eslint-plugin-react-hooks": "^2.0.1",
-    "@typescript-eslint/parser": "^2.1.0",
-    "prettier": "^1.18.2",
-    "eslint-config-prettier": "^6.2.0",
-    "eslint-plugin-prettier": "^3.1.0",
-    "babel-eslint": "10.0.2",
-    "lint-staged": "^9.2.5",
     "@commitlint/cli": "^8.1.0",
-    "@commitlint/config-angular": "^8.1.0"
+    "@commitlint/config-angular": "^8.1.0",
+    "@typescript-eslint/eslint-plugin": "^2.1.0",
+    "@typescript-eslint/parser": "^2.1.0",
+    "babel-eslint": "10.0.2",
+    "babel-plugin-import": "^1.12.1",
+    "customize-cra": "^0.7.0",
+    "eslint": "^6.3.0",
+    "eslint-config-prettier": "^6.2.0",
+    "eslint-config-react-app": "^5.0.1",
+    "eslint-plugin-flowtype": "^4.3.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-prettier": "^3.1.0",
+    "eslint-plugin-react": "^7.14.3",
+    "eslint-plugin-react-hooks": "^2.0.1",
+    "husky": "^3.0.5",
+    "less-loader": "^5.0.0",
+    "lint-staged": "^9.2.5",
+    "prettier": "^1.18.2",
+    "react-app-rewired": "^2.1.1"
   },
   "husky": {
     "hooks": {

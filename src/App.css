@@ -1,0 +1,42 @@
+#root,
+body,
+html {
+  height: 100%;
+}
+
+.top_header {
+  width: 100%;
+  padding: 0 30px;
+  background-color: #fff;
+  box-shadow: 4px 4px 40px 0 rgba(0, 0, 0, 0.05);
+}
+
+.logo {
+  color: #fff;
+  height: 64px;
+  line-height: 64px;
+  padding: 0 24px;
+  overflow: hidden;
+}
+
+.logo h1 {
+  color: #1890ff;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.ant-menu-item a {
+  color: #fff;
+}
+
+.modal-edit .ant-form-item {
+  margin-bottom: 5px;
+}
+
+.ant-layout-sider-light {
+  border-right: 1px solid #e8e8e8;
+}
+
+.ant-menu-inline {
+  border-right: none !important;
+}

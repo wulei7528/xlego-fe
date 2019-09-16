@@ -12,20 +12,16 @@ export const menuList = [
   {
     key: 'company',
     title: '公司信息管理',
-    children: [
-      {
-        key: 'company1',
-        title: '更新公司信息',
-        path: '/company',
-        component: dynamic({
-          component: () => import('../pages/Produce/Company'),
-        }),
-      },
-    ],
+    iconType: 'team',
+    path: '/company',
+    component: dynamic({
+      component: () => import('../pages/Produce/Company'),
+    }),
   },
   {
     key: 'employee',
     title: '员工管理',
+    iconType: 'user',
     path: '/employee',
     component: dynamic({
       component: () => import('../pages/Produce/Employee'),
@@ -34,16 +30,19 @@ export const menuList = [
   {
     key: 'flow',
     title: '工序管理',
+    iconType: 'interaction',
     path: '/flow',
   },
   {
     key: 'price',
     title: '价格管理',
+    iconType: 'pay-circle',
     path: '/price',
   },
   {
     key: 'order',
     title: '订单管理',
+    iconType: 'ordered-list',
     path: '/order',
   },
 ]
