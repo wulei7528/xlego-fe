@@ -3,6 +3,7 @@ import { Card, Table, Modal, Button, Spin, message } from 'antd'
 import { connect } from 'dva'
 
 import QueryForm from '../../components/Produce/QueryForm'
+import AddForm from '../../components/Produce/AddForm'
 
 const moduleName = 'employee'
 const moduleCnName = '员工'
@@ -33,6 +34,12 @@ const columns = [
     dataIndex: 'updateTime',
     key: 'updateTime',
   },
+  {
+    title: '操作',
+    dataIndex: 'operation',
+    key: 'operation',
+    render: record => record,
+  },
 ]
 
 const queryItems = [
@@ -61,6 +68,53 @@ const queryItems = [
   },
 ]
 
+const addItems = [
+  {
+    type: 'input',
+    name: 'employeeName',
+    displayName: '车工姓名',
+    options: {
+      rules: [
+        {
+          required: true,
+          message: '请输入车工姓名',
+        },
+      ],
+    },
+  },
+  {
+    type: 'select',
+    name: 'employeeRole',
+    displayName: '车工角色',
+    selectOptions: [
+      {
+        text: '普通车工',
+        value: '普通车工',
+      },
+      {
+        text: '熟手',
+        value: '熟手',
+      },
+    ],
+    options: {
+      initialValue: '普通车工',
+    },
+  },
+  {
+    type: 'input',
+    name: 'telephone',
+    displayName: '联系电话',
+    options: {
+      rules: [
+        {
+          required: true,
+          message: '请输入车工联系电话',
+        },
+      ],
+    },
+  },
+]
+
 function Employee({ dispatch, list, loading }) {
   const [modalVisible, setModalVisible] = useState(false)
   const [selectedRows, setSelectedRows] = useState([])
@@ -82,6 +136,15 @@ function Employee({ dispatch, list, loading }) {
     setModalVisible(true)
   }
 
+  function saveRecord(values) {
+    dispatch({
+      type: `${moduleName}/updateRecord`,
+      payload: values,
+    }).then(() => {
+      setModalVisible(false)
+    })
+  }
+
   function deleteRecord() {
     if (!selectedRows.length) {
       message.error('请选择至少一个删除选项')
@@ -94,10 +157,6 @@ function Employee({ dispatch, list, loading }) {
       okText: '确认',
       cancelText: '取消',
     })
-  }
-
-  function handleOk() {
-    setModalVisible(false)
   }
 
   function handleCancel() {
@@ -121,15 +180,9 @@ function Employee({ dispatch, list, loading }) {
       <Spin tip="努力加载中..." spinning={loading.list}>
         <Table dataSource={list} columns={columns} rowSelection={rowSelection} bordered />
       </Spin>
-      <Modal
-        title={`新增${moduleCnName}`}
-        width={800}
-        visible={modalVisible}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        okText="确认"
-        cancelText="取消"
-      ></Modal>
+      <Modal title={`新增${moduleCnName}`} width={800} onCancel={handleCancel} visible={modalVisible} footer={null}>
+        <AddForm addItems={addItems} saveRecord={saveRecord} />
+      </Modal>
     </Card>
   )
 }

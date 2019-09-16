@@ -1,5 +1,5 @@
 import React from 'react'
-import { Switch, Route } from 'dva/router'
+import { Switch, Route, Redirect } from 'dva/router'
 
 import { menuList, getRouteData } from '../../models/menuData'
 
@@ -10,7 +10,12 @@ function generateRoutes(menuList) {
 }
 
 function MainContent() {
-  return <Switch>{generateRoutes(menuList)}</Switch>
+  return (
+    <Switch>
+      {generateRoutes(menuList)}
+      <Redirect exact from="/" to="/company" />
+    </Switch>
+  )
 }
 
 export default MainContent

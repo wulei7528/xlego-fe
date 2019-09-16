@@ -27,6 +27,7 @@ html {
 
 .ant-menu-item a {
   color: #fff;
+  display: block;
 }
 
 .modal-edit .ant-form-item {
