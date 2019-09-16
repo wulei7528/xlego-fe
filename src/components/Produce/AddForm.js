@@ -66,7 +66,9 @@ function AddForm({ form, addItems = [], saveRecord }) {
   return (
     <Form {...formItemLayout}>
       {addItems.map(item => (
-        <FormItem label={item.displayName}>{genItem(item)}</FormItem>
+        <FormItem key={item.name} label={item.displayName}>
+          {genItem(item)}
+        </FormItem>
       ))}
       <FormItem {...tailFormItemLayout}>
         <Button type="primary" style={{ marginRight: '16px' }} onClick={save}>

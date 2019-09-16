@@ -32,18 +32,27 @@ export const menuList = [
     title: '工序管理',
     iconType: 'interaction',
     path: '/flow',
+    component: dynamic({
+      component: () => import('../pages/Produce/Flow'),
+    }),
   },
   {
     key: 'price',
-    title: '价格管理',
+    title: '工序历史价格查看',
     iconType: 'pay-circle',
     path: '/price',
+    component: dynamic({
+      component: () => import('../pages/Produce/Price'),
+    }),
   },
   {
     key: 'order',
     title: '订单管理',
     iconType: 'ordered-list',
     path: '/order',
+    component: dynamic({
+      component: () => import('../pages/Produce/Order'),
+    }),
   },
 ]
 

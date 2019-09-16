@@ -13,6 +13,9 @@ const app = dva()
 app.model(require('./models/common').default)
 app.model(require('./models/company').default)
 app.model(require('./models/employee').default)
+app.model(require('./models/flow').default)
+app.model(require('./models/order').default)
+app.model(require('./models/price').default)
 
 // 4. router
 app.router(router)

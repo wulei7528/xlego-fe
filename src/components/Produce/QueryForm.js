@@ -42,8 +42,10 @@ function QueryForm({ form, queryItems = [], queryRecord, addRecord }) {
   const colProps = {
     xs: 24,
     sm: 12,
-    md: 8,
-    xl: 6,
+    md: 12,
+    lg: 12,
+    xl: 8,
+    xxl: 6,
     style: {
       marginBottom: 16,
     },
@@ -53,20 +55,22 @@ function QueryForm({ form, queryItems = [], queryRecord, addRecord }) {
     <Form layout="inline">
       <Row>
         {queryItems.map(item => (
-          <Col span={6} key={item.name} {...colProps}>
+          <Col key={item.name} {...colProps}>
             <FormItem label={item.displayName}>{genItem(item)}</FormItem>
           </Col>
         ))}
-        <Col {...colProps} xl={{ span: 12 }} md={{ span: 24 }} sm={{ span: 24 }}>
+        <Col>
           <Button type="primary" style={{ marginRight: '16px' }} onClick={query}>
             查询
           </Button>
           <Button style={{ marginRight: '16px' }} onClick={reset}>
             重置
           </Button>
-          <Button type="primary" style={{ float: 'right' }} onClick={addRecord}>
-            新增
-          </Button>
+          {addRecord && (
+            <Button type="primary" style={{ float: 'right' }} onClick={addRecord}>
+              新增
+            </Button>
+          )}
         </Col>
       </Row>
     </Form>

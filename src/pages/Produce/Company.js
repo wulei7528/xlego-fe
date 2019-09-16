@@ -1,14 +1,18 @@
 import React, { useEffect } from 'react'
+import { Card } from 'antd'
 import { connect } from 'dva'
+
+const moduleName = 'company'
+const moduleCnName = '公司'
 
 function Company({ dispatch }) {
   useEffect(() => {
     dispatch({
-      type: 'company/fetchList',
+      type: `${moduleName}/fetchList`,
     })
   }, [dispatch])
 
-  return <div>我是第一个页面</div>
+  return <Card title={`${moduleCnName}信息`}></Card>
 }
 
 export default connect(state => ({

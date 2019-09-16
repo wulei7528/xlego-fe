@@ -46,7 +46,7 @@ function SiderMenu({ location }) {
   }
 
   return (
-    <Menu theme="dark" mode="inline" defaultSelectedKeys={[key]} defaultOpenKeys={['company']} style={{ height: '100%' }}>
+    <Menu theme="dark" mode="inline" defaultSelectedKeys={[key]} defaultOpenKeys={['company']}>
       {generateMenus(menuList)}
     </Menu>
   )
