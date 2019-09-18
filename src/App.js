@@ -25,10 +25,10 @@ function App({ siderMenuCollapsed }) {
         <SiderMenu />
       </Sider>
       <Layout>
-        <Header className="top_header">
+        <Header className="header">
           <HeaderNav />
         </Header>
-        <Content style={{ padding: '0 24px', minHeight: 'calc(100vh - 64px)' }}>
+        <Content className="content">
           <MainBreadcrumb />
           <MainContent />
         </Content>

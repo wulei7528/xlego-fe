@@ -4,7 +4,7 @@ html {
   height: 100%;
 }
 
-.top_header {
+.header {
   width: 100%;
   padding: 0 30px;
   background-color: #fff;
@@ -23,6 +23,11 @@ html {
   color: #1890ff;
   font-size: 18px;
   font-weight: bold;
+}
+
+.content {
+  padding: 0 24px;
+  min-height: calc(100vh - 64px);
 }
 
 .ant-menu-item a {

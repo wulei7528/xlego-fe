@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react'
-import { Card, Table, Modal, Button, Spin, message } from 'antd'
+import React, { useEffect } from 'react'
+import { Card, Table, Spin } from 'antd'
 import { connect } from 'dva'
 
 import QueryForm from '../../components/Produce/QueryForm'
-import AddForm from '../../components/Produce/AddForm'
 
 const moduleName = 'price'
 const moduleCnName = '价格'
@@ -45,53 +44,6 @@ const queryItems = [
   },
 ]
 
-const addItems = [
-  {
-    type: 'input',
-    name: 'flowName',
-    displayName: '工序名称',
-    options: {
-      rules: [
-        {
-          required: true,
-          message: '请输入工序名称',
-        },
-      ],
-    },
-  },
-  {
-    type: 'select',
-    name: 'employeeRole',
-    displayName: '车工角色',
-    selectOptions: [
-      {
-        text: '普通车工',
-        value: '普通车工',
-      },
-      {
-        text: '熟手',
-        value: '熟手',
-      },
-    ],
-    options: {
-      initialValue: '普通车工',
-    },
-  },
-  {
-    type: 'input',
-    name: 'telephone',
-    displayName: '联系电话',
-    options: {
-      rules: [
-        {
-          required: true,
-          message: '请输入车工联系电话',
-        },
-      ],
-    },
-  },
-]
-
 function Price({ dispatch, list, loading }) {
   useEffect(() => {
     dispatch({
@@ -107,7 +59,7 @@ function Price({ dispatch, list, loading }) {
   }
 
   return (
-    <Card>
+    <Card title={`${moduleCnName}信息`}>
       <QueryForm queryItems={queryItems} queryRecord={queryRecord} />
       <Spin tip="努力加载中..." spinning={loading.list}>
         <Table dataSource={list} columns={columns} bordered />

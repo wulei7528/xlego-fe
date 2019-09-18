@@ -177,7 +177,7 @@ function Order({ dispatch, list, loading }) {
   }
 
   return (
-    <Card>
+    <Card title={`${moduleCnName}信息`}>
       <QueryForm queryItems={queryItems} addRecord={addRecord} queryRecord={queryRecord} />
       {selectedRows.length > 0 && (
         <Card style={{ margin: '10px 0' }}>
