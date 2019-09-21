@@ -9,7 +9,7 @@ function MainBreadcrumb({ location }) {
 
   return (
     <Breadcrumb style={{ margin: '16px 0' }}>
-      <span>当前所在的位置> </span>
+      <Breadcrumb.Item>当前所在位置</Breadcrumb.Item>
       {paths.map(path => path && <Breadcrumb.Item key={path}>{Constants.pathMap[path]}</Breadcrumb.Item>)}
     </Breadcrumb>
   )
