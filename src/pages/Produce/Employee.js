@@ -10,6 +10,11 @@ const moduleCnName = '员工'
 
 const columns = [
   {
+    title: '车工ID',
+    dataIndex: 'id',
+    key: 'id',
+  },
+  {
     title: '车工姓名',
     dataIndex: 'employeeName',
     key: 'employeeName',
@@ -38,11 +43,18 @@ const columns = [
     title: '操作',
     dataIndex: 'operation',
     key: 'operation',
-    render: record => record,
+    render: record => {
+      console.log(record)
+    },
   },
 ]
 
 const queryItems = [
+  {
+    type: 'input',
+    name: 'id',
+    displayName: '车工ID',
+  },
   {
     type: 'input',
     name: 'employeeName',

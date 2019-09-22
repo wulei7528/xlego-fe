@@ -4,4 +4,5 @@ export const pathMap = {
   flow: '工序管理',
   price: '价格管理',
   order: '订单管理',
+  report: '报表查看',
 }

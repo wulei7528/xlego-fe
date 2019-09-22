@@ -61,6 +61,11 @@ const queryItems = [
   {
     type: 'input',
     name: 'employeeName',
+    displayName: '订单ID',
+  },
+  {
+    type: 'input',
+    name: 'employeeName',
     displayName: '车工姓名',
   },
   {
@@ -114,11 +119,17 @@ const addItems = [
     type: 'input',
     name: 'price',
     displayName: '工序单价',
+    props: {
+      disabled: true,
+    },
   },
   {
     type: 'input',
     name: 'cost',
     displayName: '工序费用',
+    props: {
+      disabled: true,
+    },
   },
 ]
 

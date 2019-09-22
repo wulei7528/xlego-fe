@@ -38,7 +38,7 @@ export const menuList = [
   },
   {
     key: 'price',
-    title: '工序历史价格查看',
+    title: '工序历史价格',
     iconType: 'pay-circle',
     path: '/price',
     component: dynamic({
@@ -52,6 +52,15 @@ export const menuList = [
     path: '/order',
     component: dynamic({
       component: () => import('../pages/Produce/Order'),
+    }),
+  },
+  {
+    key: 'report',
+    title: '报表管理',
+    iconType: 'schedule',
+    path: '/report',
+    component: dynamic({
+      component: () => import('../pages/Produce/Report'),
     }),
   },
 ]

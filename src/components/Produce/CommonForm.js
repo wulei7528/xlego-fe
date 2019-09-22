@@ -1,22 +1,24 @@
 import React from 'react'
-import { Form, Input, Select, Radio, Row } from 'antd'
+import { Form, Input, Select, Radio, Row, DatePicker } from 'antd'
 
 import './index.css'
 
 const { Item: FormItem } = Form
 const { Option } = Select
+const { RangePicker } = DatePicker
 
-function CommonForm({ form, formItems = [], disabled, layout = 'horizontal', renderTailPart }) {
+function CommonForm({ form, formItems = [], itemCommonProps, layout = 'horizontal', renderTailPart }) {
   const { getFieldDecorator } = form
 
   function generateItem(item) {
+    const itemProps = { ...itemCommonProps, ...item.props }
     if (item.type === 'input') {
-      return getFieldDecorator(item.name, item.options)(<Input placeholder={item.placeholder} disabled={disabled} />)
+      return getFieldDecorator(item.name, item.options)(<Input placeholder={item.placeholder} {...itemProps} />)
     }
 
     if (item.type === 'select') {
       return getFieldDecorator(item.name, item.options)(
-        <Select placeholder={item.placeholder} style={{ width: '160px' }} disabled={disabled}>
+        <Select placeholder={item.placeholder} style={{ width: '160px' }} {...itemProps}>
           {(item.selectOptions || []).map(item => (
             <Option key={item.value} value={item.value}>
               {item.text}
@@ -28,7 +30,7 @@ function CommonForm({ form, formItems = [], disabled, layout = 'horizontal', ren
 
     if (item.type === 'radio') {
       return getFieldDecorator(item.name, item.options)(
-        <Radio.Group placeholder={item.placeholder} disabled={disabled}>
+        <Radio.Group placeholder={item.placeholder} {...itemProps}>
           {(item.radioOptions || []).map(item => (
             <Radio key={item.value} value={item.value}>
               {item.text}
@@ -36,6 +38,10 @@ function CommonForm({ form, formItems = [], disabled, layout = 'horizontal', ren
           ))}
         </Radio.Group>
       )
+    }
+
+    if (item.type === 'rangepicker') {
+      return getFieldDecorator(item.name, item.options)(<RangePicker {...itemProps} />)
     }
   }
 
@@ -73,7 +79,7 @@ function CommonForm({ form, formItems = [], disabled, layout = 'horizontal', ren
     <Form layout={layout} className={layout}>
       <Row>
         {formItems.map(item => (
-          <FormItem label={item.displayName} {...formItemLayout}>
+          <FormItem key={item.name} label={item.displayName} {...formItemLayout}>
             {generateItem(item)}
           </FormItem>
         ))}

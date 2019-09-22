@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Card, Table, Spin } from 'antd'
 import { connect } from 'dva'
 
@@ -38,19 +38,13 @@ const columns = [
 
 const queryItems = [
   {
-    type: 'input',
-    name: 'flowName',
-    displayName: '工序名称',
+    type: 'rangepicker',
+    name: 'time',
+    displayName: '起始时间',
   },
 ]
 
 function Price({ dispatch, list, loading }) {
-  useEffect(() => {
-    dispatch({
-      type: `${moduleName}/fetchList`,
-    })
-  }, [dispatch])
-
   function queryRecord(values) {
     dispatch({
       type: `${moduleName}/fetchList`,
@@ -60,10 +54,12 @@ function Price({ dispatch, list, loading }) {
 
   return (
     <Card title={`${moduleCnName}信息`}>
-      <QueryForm queryItems={queryItems} queryRecord={queryRecord} />
-      <Spin tip="努力加载中..." spinning={loading.list}>
-        <Table dataSource={list} columns={columns} bordered />
-      </Spin>
+      <QueryForm queryItems={queryItems} queryRecord={queryRecord} buttonText={{ queryButtonText: '生成报表' }} />
+      {list.length > 0 ? (
+        <Spin tip="努力加载中..." spinning={loading.list}>
+          <Table dataSource={list} columns={columns} bordered />
+        </Spin>
+      ) : null}
     </Card>
   )
 }

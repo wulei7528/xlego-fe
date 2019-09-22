@@ -10,6 +10,11 @@ const moduleCnName = '工序'
 
 const columns = [
   {
+    title: '工序ID',
+    dataIndex: 'id',
+    key: 'id',
+  },
+  {
     title: '工序名',
     dataIndex: 'flowName',
     key: 'flowName',
@@ -43,6 +48,11 @@ const columns = [
 ]
 
 const queryItems = [
+  {
+    type: 'input',
+    name: 'id',
+    displayName: '工序ID',
+  },
   {
     type: 'input',
     name: 'flowName',

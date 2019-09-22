@@ -3,7 +3,7 @@ import { Form, Button } from 'antd'
 
 import CommonForm from './CommonForm'
 
-function QueryForm({ form, queryItems = [], queryRecord, addRecord }) {
+function QueryForm({ form, queryItems = [], queryRecord, addRecord, buttonText = {} }) {
   function query() {
     form.validateFields((err, values) => {
       if (err) {
@@ -18,6 +18,8 @@ function QueryForm({ form, queryItems = [], queryRecord, addRecord }) {
     form.resetFields()
   }
 
+  const { queryButtonText = '查询', resetButtonText = '重置', addButtonText = '新增' } = buttonText
+
   return (
     <CommonForm
       layout="inline"
@@ -26,14 +28,14 @@ function QueryForm({ form, queryItems = [], queryRecord, addRecord }) {
       renderTailPart={() => (
         <div>
           <Button type="primary" style={{ marginRight: '16px' }} onClick={query}>
-            查询
+            {queryButtonText}
           </Button>
           <Button style={{ marginRight: '16px' }} onClick={reset}>
-            重置
+            {resetButtonText}
           </Button>
           {addRecord && (
             <Button type="primary" onClick={addRecord}>
-              新增
+              {addButtonText}
             </Button>
           )}
         </div>

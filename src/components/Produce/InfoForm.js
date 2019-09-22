@@ -32,7 +32,7 @@ function InfoForm({ form, infoItems = [], modifyRecord }) {
     <CommonForm
       form={form}
       formItems={infoItems}
-      disabled={formDisabled}
+      itemCommonProps={{ disabled: true }}
       renderTailPart={() => (
         <div>
           <Button type="primary" style={{ marginRight: '16px' }} onClick={modify}>

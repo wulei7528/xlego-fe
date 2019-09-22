@@ -9,6 +9,11 @@ const moduleCnName = '价格'
 
 const columns = [
   {
+    title: '工序ID',
+    dataIndex: 'id',
+    key: 'id',
+  },
+  {
     title: '工序名称',
     dataIndex: 'flowName',
     key: 'flowName',
@@ -37,6 +42,11 @@ const columns = [
 ]
 
 const queryItems = [
+  {
+    type: 'input',
+    name: 'id',
+    displayName: '工序ID',
+  },
   {
     type: 'input',
     name: 'flowName',
