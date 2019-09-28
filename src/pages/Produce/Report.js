@@ -44,7 +44,7 @@ const queryItems = [
   },
 ]
 
-function Price({ dispatch, list, loading }) {
+function Report({ dispatch, list, loading }) {
   function queryRecord(values) {
     dispatch({
       type: `${moduleName}/fetchList`,
@@ -55,7 +55,7 @@ function Price({ dispatch, list, loading }) {
   return (
     <Card title={`${moduleCnName}信息`}>
       <QueryForm queryItems={queryItems} queryRecord={queryRecord} buttonText={{ queryButtonText: '生成报表' }} />
-      {list.length > 0 ? (
+      {list && list.length > 0 ? (
         <Spin tip="努力加载中..." spinning={loading.list}>
           <Table dataSource={list} columns={columns} bordered />
         </Spin>
@@ -65,5 +65,5 @@ function Price({ dispatch, list, loading }) {
 }
 
 export default connect(state => ({
-  ...state.price,
-}))(Price)
+  ...state.report,
+}))(Report)
