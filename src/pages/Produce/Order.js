@@ -3,7 +3,7 @@ import { Card, Table, Modal, Button, Spin, message } from 'antd'
 import { connect } from 'dva'
 
 import QueryForm from '../../components/Produce/QueryForm'
-import AddForm from '../../components/Produce/AddForm'
+import BatchAddForm from '../../components/Produce/BatchAddForm'
 
 const moduleName = 'order'
 const moduleCnName = '订单'
@@ -60,7 +60,7 @@ const columns = [
 const queryItems = [
   {
     type: 'input',
-    name: 'employeeName',
+    name: 'id',
     displayName: '订单ID',
   },
   {
@@ -199,7 +199,7 @@ function Order({ dispatch, list, loading }) {
         <Table dataSource={list} columns={columns} rowSelection={rowSelection} bordered />
       </Spin>
       <Modal title={`新增${moduleCnName}`} width={800} onCancel={handleCancel} visible={modalVisible} footer={null}>
-        <AddForm addItems={addItems} saveRecord={saveRecord} />
+        <BatchAddForm addItems={addItems} saveRecord={saveRecord} />
       </Modal>
     </Card>
   )
