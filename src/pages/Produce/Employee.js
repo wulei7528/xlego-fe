@@ -182,7 +182,7 @@ function Employee({ dispatch, list, loading }) {
   }
 
   return (
-    <Card title={`${moduleCnName}信息`}>
+    <Card>
       <QueryForm queryItems={queryItems} addRecord={addRecord} queryRecord={queryRecord} />
       {selectedRows.length > 0 && (
         <Card style={{ margin: '10px 0' }}>
@@ -190,7 +190,7 @@ function Employee({ dispatch, list, loading }) {
         </Card>
       )}
       <Spin tip="努力加载中..." spinning={loading.list}>
-        <Table dataSource={list} columns={columns} rowSelection={rowSelection} bordered />
+        <Table size="middle" dataSource={list} columns={columns} rowSelection={rowSelection} bordered />
       </Spin>
       <Modal title={`新增${moduleCnName}`} width={800} onCancel={handleCancel} visible={modalVisible} footer={null}>
         <AddForm addItems={addItems} saveRecord={saveRecord} />

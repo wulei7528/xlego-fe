@@ -3,6 +3,7 @@ import { Card, Table, Modal, Button, Spin, message } from 'antd'
 import { connect } from 'dva'
 
 import QueryForm from '../../components/Produce/QueryForm'
+import AddForm from '../../components/Produce/AddForm'
 import BatchAddForm from '../../components/Produce/BatchAddForm'
 
 const moduleName = 'order'
@@ -135,6 +136,7 @@ const addItems = [
 
 function Order({ dispatch, list, loading }) {
   const [modalVisible, setModalVisible] = useState(false)
+  const [batchModalVisible, setBatchModalVisible] = useState(false)
   const [selectedRows, setSelectedRows] = useState([])
 
   useEffect(() => {
@@ -152,6 +154,10 @@ function Order({ dispatch, list, loading }) {
 
   function addRecord() {
     setModalVisible(true)
+  }
+
+  function batchAddRecord() {
+    setBatchModalVisible(true)
   }
 
   function saveRecord(values) {
@@ -181,6 +187,10 @@ function Order({ dispatch, list, loading }) {
     setModalVisible(false)
   }
 
+  function handleBatchCancel() {
+    setBatchModalVisible(false)
+  }
+
   const rowSelection = {
     onChange: (_, selectedRows) => {
       setSelectedRows(selectedRows)
@@ -188,17 +198,20 @@ function Order({ dispatch, list, loading }) {
   }
 
   return (
-    <Card title={`${moduleCnName}信息`}>
-      <QueryForm queryItems={queryItems} addRecord={addRecord} queryRecord={queryRecord} />
+    <Card>
+      <QueryForm queryItems={queryItems} queryRecord={queryRecord} addRecord={addRecord} batchAddRecord={batchAddRecord} />
       {selectedRows.length > 0 && (
         <Card style={{ margin: '10px 0' }}>
           <Button onClick={deleteRecord}>删除</Button>
         </Card>
       )}
       <Spin tip="努力加载中..." spinning={loading.list}>
-        <Table dataSource={list} columns={columns} rowSelection={rowSelection} bordered />
+        <Table size="middle" dataSource={list} columns={columns} rowSelection={rowSelection} bordered />
       </Spin>
-      <Modal title={`新增${moduleCnName}`} width={800} onCancel={handleCancel} visible={modalVisible} footer={null}>
+      <Modal title={`新增${moduleCnName}`} width={880} onCancel={handleCancel} visible={modalVisible} footer={null}>
+        <AddForm addItems={addItems} saveRecord={saveRecord} />
+      </Modal>
+      <Modal title={`批量新增${moduleCnName}`} width={880} onCancel={handleBatchCancel} visible={batchModalVisible} footer={null}>
         <BatchAddForm addItems={addItems} saveRecord={saveRecord} />
       </Modal>
     </Card>

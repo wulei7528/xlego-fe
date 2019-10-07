@@ -44,7 +44,7 @@ function Company({ dispatch }) {
   }
 
   return (
-    <Card title={`${moduleCnName}信息`}>
+    <Card>
       <InfoForm infoItems={infoItems} modifyRecord={modifyRecord} />
     </Card>
   )

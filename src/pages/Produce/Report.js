@@ -53,11 +53,11 @@ function Report({ dispatch, list, loading }) {
   }
 
   return (
-    <Card title={`${moduleCnName}信息`}>
+    <Card>
       <QueryForm queryItems={queryItems} queryRecord={queryRecord} buttonText={{ queryButtonText: '生成报表' }} />
       {list && list.length > 0 ? (
         <Spin tip="努力加载中..." spinning={loading.list}>
-          <Table dataSource={list} columns={columns} bordered />
+          <Table size="middle" dataSource={list} columns={columns} bordered />
         </Spin>
       ) : null}
     </Card>
