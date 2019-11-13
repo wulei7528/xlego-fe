@@ -14,7 +14,7 @@ const infoItems = [
   },
   {
     type: 'input',
-    name: 'desc',
+    name: 'description',
     displayName: '公司描述',
   },
   {
@@ -29,23 +29,31 @@ const infoItems = [
   },
 ]
 
-function Company({ dispatch }) {
+function Company({ dispatch, record }) {
   useEffect(() => {
     dispatch({
-      type: `${moduleName}/fetchList`,
+      type: `${moduleName}/getRecord`,
+      payload: {
+        id: 2,
+      },
     })
   }, [dispatch])
 
   function modifyRecord(values) {
+    const payload = {
+      ...record,
+      ...values,
+    }
+
     dispatch({
       type: `${moduleName}/updateRecord`,
-      payload: values,
+      payload,
     })
   }
 
   return (
     <Card>
-      <InfoForm infoItems={infoItems} modifyRecord={modifyRecord} />
+      <InfoForm infoItems={infoItems} modifyRecord={modifyRecord} record={record} />
     </Card>
   )
 }

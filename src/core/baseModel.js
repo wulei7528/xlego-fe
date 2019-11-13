@@ -40,18 +40,18 @@ export default {
       const ns = getNs(action.type)
       const { id } = action.payload
 
-      const record = yield call(axios.get, `/api/${ns}/${id}`)
+      const { data: record } = yield call(axios.get, `/api/${ns}/${id}`)
       yield put({ type: 'saveRecord', payload: record })
     },
-    *updateRecord(action, { call }) {
+    *updateRecord(action, { call, put }) {
       const ns = getNs(action.type)
       const { id } = action.payload
       const method = id ? axios.put : axios.post
       const url = id ? `/api/${ns}/${id}` : `/api/${ns}`
 
-      const ret = yield call(method, url, action.payload)
+      const { data: record } = yield call(method, url, action.payload)
 
-      return ret
+      yield put({ type: 'saveRecord', payload: record })
     },
     *deleteRecord(action, { call }) {
       const ns = getNs(action.type)

@@ -3,14 +3,14 @@ import { Form, Button } from 'antd'
 
 import CommonForm from './CommonForm'
 
-function InfoForm({ form, infoItems = [], modifyRecord }) {
-  const [formDisabled, setFormDisabled] = useState(true)
+function InfoForm({ form, record, infoItems = [], modifyRecord }) {
+  const [onlyText, setOnlyText] = useState(true)
   const [buttonText, setButtonText] = useState('编辑修改')
 
   function modify() {
-    setFormDisabled(!formDisabled)
+    setOnlyText(!onlyText)
 
-    if (formDisabled) {
+    if (onlyText) {
       setButtonText('完成修改')
     } else {
       form.validateFields((err, values) => {
@@ -24,22 +24,16 @@ function InfoForm({ form, infoItems = [], modifyRecord }) {
     }
   }
 
-  function reset() {
-    form.resetFields()
-  }
-
   return (
     <CommonForm
       form={form}
       formItems={infoItems}
-      itemCommonProps={{ disabled: formDisabled }}
+      record={record}
+      onlyText={onlyText}
       renderTailPart={() => (
         <div>
           <Button type="primary" style={{ marginRight: '16px' }} onClick={modify}>
             {buttonText}
-          </Button>
-          <Button style={{ marginRight: '16px' }} onClick={reset}>
-            重置
           </Button>
         </div>
       )}
@@ -47,4 +41,17 @@ function InfoForm({ form, infoItems = [], modifyRecord }) {
   )
 }
 
-export default Form.create()(InfoForm)
+export default Form.create({
+  mapPropsToFields(props) {
+    const { record } = props
+    const result = {}
+
+    Object.keys(record).forEach(key => {
+      result[key] = Form.createFormField({
+        value: record[key],
+      })
+    })
+
+    return result
+  },
+})(InfoForm)

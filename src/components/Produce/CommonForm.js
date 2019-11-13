@@ -6,7 +6,7 @@ import './index.css'
 
 const { Item: FormItem } = Form
 
-function CommonForm({ form, formItems = [], itemCommonProps, layout = 'horizontal', renderTailPart }) {
+function CommonForm({ form, formItems = [], itemCommonProps, layout = 'horizontal', renderTailPart, record, onlyText = false }) {
   const { getFieldDecorator } = form
 
   const formItemLayout =
@@ -44,7 +44,8 @@ function CommonForm({ form, formItems = [], itemCommonProps, layout = 'horizonta
       <Row>
         {formItems.map(item => (
           <FormItem key={item.name} label={item.displayName} {...formItemLayout}>
-            {getFieldDecorator(item.name, item.options)(generateFormItem(item, { itemProps: itemCommonProps }))}
+            {onlyText && record[item.name]}
+            {!onlyText && getFieldDecorator(item.name, item.options)(generateFormItem(item, { itemProps: itemCommonProps }))}
           </FormItem>
         ))}
       </Row>
