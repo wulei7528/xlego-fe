@@ -4,7 +4,7 @@ import { connect } from 'dva'
 
 import './HeaderNav.css'
 
-function HeaderNav({ dispatch }) {
+function HeaderNav({ dispatch, userInfo }) {
   const [collapsed, setCollapsed] = useState(false)
 
   function toggle() {
@@ -21,10 +21,10 @@ function HeaderNav({ dispatch }) {
         <Icon className="trigger" type={collapsed ? 'menu-unfold' : 'menu-fold'} onClick={toggle} />
       </Col>
       <Col span={12}>
-        <div className="header_user">吴磊</div>
+        <div className="header_user">{userInfo.name}</div>
       </Col>
     </Row>
   )
 }
 
-export default connect()(HeaderNav)
+export default connect(state => ({ ...state.common }))(HeaderNav)

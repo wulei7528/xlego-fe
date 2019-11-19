@@ -1,4 +1,5 @@
 import axios from './axios'
+import { CODE } from './constants'
 
 function getNs(type) {
   return type.substring(0, type.indexOf('/'))
@@ -32,7 +33,7 @@ export default {
       const ns = getNs(action.type)
 
       yield put({ type: 'saveLoading', key: 'list', payload: true })
-      const list = yield call(axios.get, `/api/${ns}`, { params: action.payload })
+      const { data: list } = yield call(axios.get, `/api/${ns}`, { params: action.payload })
       yield put({ type: 'saveList', payload: list })
       yield put({ type: 'saveLoading', key: 'list', payload: false })
     },
@@ -49,17 +50,19 @@ export default {
       const method = id ? axios.put : axios.post
       const url = id ? `/api/${ns}/${id}` : `/api/${ns}`
 
-      const { data: record } = yield call(method, url, action.payload)
+      const { code } = yield call(method, url, action.payload)
 
-      yield put({ type: 'saveRecord', payload: record })
+      if (code === CODE.SUCCESS) {
+        yield put({ type: 'fetchList' })
+      }
     },
     *deleteRecord(action, { call }) {
       const ns = getNs(action.type)
       const { id } = action.payload
 
-      const ret = yield call(axios.delete, `/api/${ns}/${id}`, action.payload)
+      const { data } = yield call(axios.delete, `/api/${ns}/${id}`, action.payload)
 
-      return ret
+      return data
     },
   },
 }

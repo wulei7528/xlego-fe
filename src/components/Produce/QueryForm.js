@@ -38,7 +38,7 @@ function QueryForm({ form, queryItems = [], queryRecord, addRecord, batchAddReco
       renderTailPart={() => (
         <div>
           {formButtons.map(button => (
-            <Button type={button.type} style={{ marginRight: 16 }}>
+            <Button key={button.text} type={button.type} style={{ marginRight: 16 }} onClick={button.handerClick}>
               {button.text}
             </Button>
           ))}

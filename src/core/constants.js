@@ -6,3 +6,8 @@ export const pathMap = {
   order: '订单管理',
   report: '报表查看',
 }
+
+export const CODE = {
+  SUCCESS: 0,
+  FAIL: -1,
+}

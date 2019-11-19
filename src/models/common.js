@@ -6,6 +6,10 @@ const myModal = {
   subscriptions: {},
   state: {
     siderMenuCollapsed: false,
+    userInfo: {
+      name: '吴磊',
+      companyId: 1,
+    },
   },
   reducers: {
     saveSiderMenuCollapsed(state, action) {

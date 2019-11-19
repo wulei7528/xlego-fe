@@ -2,14 +2,14 @@ import React from 'react'
 import CommonForm from './CommonForm'
 import { Form, Button } from 'antd'
 
-function AddForm({ form, addItems = [], saveRecord }) {
+function EditForm({ form, addItems = [], record = {}, saveRecord }) {
   function save() {
     form.validateFields((err, values) => {
       if (err) {
         return
       }
 
-      saveRecord(values)
+      saveRecord({ ...record, ...values })
     })
   }
 
@@ -33,4 +33,17 @@ function AddForm({ form, addItems = [], saveRecord }) {
   )
 }
 
-export default Form.create()(AddForm)
+export default Form.create({
+  mapPropsToFields(props) {
+    const { record = {} } = props
+    const result = {}
+
+    Object.keys(record).forEach(key => {
+      result[key] = Form.createFormField({
+        value: record[key],
+      })
+    })
+
+    return result
+  },
+})(EditForm)

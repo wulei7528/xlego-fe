@@ -34,7 +34,7 @@ function Company({ dispatch, record }) {
     dispatch({
       type: `${moduleName}/getRecord`,
       payload: {
-        id: 2,
+        id: 1,
       },
     })
   }, [dispatch])

@@ -31,11 +31,9 @@ function InfoForm({ form, record, infoItems = [], modifyRecord }) {
       record={record}
       onlyText={onlyText}
       renderTailPart={() => (
-        <div>
-          <Button type="primary" style={{ marginRight: '16px' }} onClick={modify}>
-            {buttonText}
-          </Button>
-        </div>
+        <Button type="primary" style={{ marginRight: '16px' }} onClick={modify}>
+          {buttonText}
+        </Button>
       )}
     />
   )
@@ -43,7 +41,7 @@ function InfoForm({ form, record, infoItems = [], modifyRecord }) {
 
 export default Form.create({
   mapPropsToFields(props) {
-    const { record } = props
+    const { record = {} } = props
     const result = {}
 
     Object.keys(record).forEach(key => {

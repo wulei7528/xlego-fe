@@ -3,7 +3,7 @@ import { Card, Table, Modal, Button, Spin, message } from 'antd'
 import { connect } from 'dva'
 
 import QueryForm from '../../components/Produce/QueryForm'
-import AddForm from '../../components/Produce/AddForm'
+import EditForm from '../../components/Produce/EditForm'
 
 const moduleName = 'flow'
 const moduleCnName = '工序'
@@ -164,7 +164,7 @@ function Flow({ dispatch, list, loading }) {
         <Table size="middle" dataSource={list} columns={columns} rowSelection={rowSelection} bordered />
       </Spin>
       <Modal title={`新增${moduleCnName}`} width={800} onCancel={handleCancel} visible={modalVisible} footer={null}>
-        <AddForm addItems={addItems} saveRecord={saveRecord} />
+        <EditForm addItems={addItems} saveRecord={saveRecord} />
       </Modal>
     </Card>
   )
