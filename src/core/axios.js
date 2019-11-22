@@ -9,6 +9,11 @@ axios.interceptors.request.use(request => {
 
 axios.interceptors.response.use(
   response => {
+    const { code, msg } = response.data
+
+    if (code !== 0) {
+      message.error(`${msg}:数据获取出错，请联系系统维护人员!`)
+    }
     return response.data
   },
   error => {

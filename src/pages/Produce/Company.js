@@ -24,6 +24,11 @@ const infoItems = [
   },
   {
     type: 'input',
+    name: 'address',
+    displayName: '公司地址',
+  },
+  {
+    type: 'input',
     name: 'telephone',
     displayName: '联系电话',
   },
@@ -45,9 +50,14 @@ function Company({ dispatch, record }) {
       ...values,
     }
 
-    dispatch({
+    return dispatch({
       type: `${moduleName}/updateRecord`,
       payload,
+    }).then(data => {
+      dispatch({
+        type: `${moduleName}/saveRecord`,
+        payload: data.data,
+      })
     })
   }
 

@@ -3,7 +3,7 @@ import { Form, Button } from 'antd'
 
 import CommonForm from './CommonForm'
 
-function QueryForm({ form, queryItems = [], queryRecord, addRecord, batchAddRecord }) {
+function QueryForm({ form, queryItems = [], queryRecord, addRecord, batchAddRecord, deleteRecord }) {
   function query() {
     form.validateFields((err, values) => {
       if (err) {
@@ -50,6 +50,11 @@ function QueryForm({ form, queryItems = [], queryRecord, addRecord, batchAddReco
           {batchAddRecord && (
             <Button type="primary" style={{ marginRight: 16 }} onClick={batchAddRecord}>
               批量新增
+            </Button>
+          )}
+          {deleteRecord && (
+            <Button type="danger" style={{ marginRight: 16 }} onClick={deleteRecord}>
+              删除
             </Button>
           )}
         </div>

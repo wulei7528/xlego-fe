@@ -8,19 +8,20 @@ function InfoForm({ form, record, infoItems = [], modifyRecord }) {
   const [buttonText, setButtonText] = useState('编辑修改')
 
   function modify() {
-    setOnlyText(!onlyText)
-
     if (onlyText) {
       setButtonText('完成修改')
+      setOnlyText(!onlyText)
     } else {
       form.validateFields((err, values) => {
         if (err) {
           return
         }
 
-        modifyRecord(values)
+        modifyRecord(values).then(() => {
+          setOnlyText(!onlyText)
+          setButtonText('编辑修改')
+        })
       })
-      setButtonText('启动修改')
     }
   }
 
@@ -44,6 +45,7 @@ export default Form.create({
     const { record = {} } = props
     const result = {}
 
+    console.log(record)
     Object.keys(record).forEach(key => {
       result[key] = Form.createFormField({
         value: record[key],

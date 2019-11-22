@@ -1,51 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { Card, Table, Modal, Button, Spin, message } from 'antd'
 import { connect } from 'dva'
+import moment from 'moment'
 
 import QueryForm from '../../components/Produce/QueryForm'
 import EditForm from '../../components/Produce/EditForm'
 
 const moduleName = 'flow'
 const moduleCnName = '工序'
-
-const columns = [
-  {
-    title: '工序ID',
-    dataIndex: 'id',
-    key: 'id',
-  },
-  {
-    title: '工序名',
-    dataIndex: 'flowName',
-    key: 'flowName',
-  },
-  {
-    title: '工序描述说明',
-    dataIndex: 'flowDesc',
-    key: 'flowDesc',
-  },
-  {
-    title: '工序最新价格',
-    dataIndex: 'price',
-    key: 'price',
-  },
-  {
-    title: '创建时间',
-    dataIndex: 'createTime',
-    key: 'createTime',
-  },
-  {
-    title: '修改时间',
-    dataIndex: 'updateTime',
-    key: 'updateTime',
-  },
-  {
-    title: '操作',
-    dataIndex: 'operation',
-    key: 'operation',
-    render: record => record,
-  },
-]
 
 const queryItems = [
   {
@@ -92,15 +54,19 @@ const addItems = [
         {
           type: 'number',
           message: '数字',
+          transform: value => {
+            return Number(value)
+          },
         },
       ],
     },
   },
 ]
 
-function Flow({ dispatch, list, loading }) {
+function Flow({ dispatch, list, record, loading, userInfo }) {
   const [modalVisible, setModalVisible] = useState(false)
   const [selectedRows, setSelectedRows] = useState([])
+  const formRef = useRef()
 
   useEffect(() => {
     dispatch({
@@ -119,27 +85,60 @@ function Flow({ dispatch, list, loading }) {
     setModalVisible(true)
   }
 
-  function saveRecord(values) {
+  function editRecord(record) {
     dispatch({
-      type: `${moduleName}/updateRecord`,
-      payload: values,
+      type: `${moduleName}/getRecord`,
+      payload: {
+        id: record.id,
+      },
     }).then(() => {
-      setModalVisible(false)
+      setModalVisible(true)
     })
   }
 
-  function deleteRecord() {
-    if (!selectedRows.length) {
+  function saveRecord(values) {
+    dispatch({
+      type: `${moduleName}/updateRecord`,
+      payload: {
+        companyId: userInfo.companyId,
+        ...values,
+      },
+    }).then(() => {
+      setModalVisible(false)
+      refreshPage()
+    })
+  }
+
+  function deleteRecord(records) {
+    if (!records.length) {
       message.error('请选择至少一个删除选项')
       return
     }
 
     Modal.confirm({
       content: `确认要删除${moduleCnName}`,
-      onOk: () => {},
+      onOk: () => {
+        dispatch({
+          type: `${moduleName}/deleteRecord`,
+          payload: {
+            id: records[0].id,
+          },
+        }).then(() => refreshPage())
+      },
       okText: '确认',
       cancelText: '取消',
     })
+  }
+
+  function refreshPage() {
+    dispatch({
+      type: `${moduleName}/fetchList`,
+    })
+    dispatch({
+      type: `${moduleName}/saveRecord`,
+      payload: {},
+    })
+    formRef.current.resetFields()
   }
 
   function handleCancel() {
@@ -152,19 +151,76 @@ function Flow({ dispatch, list, loading }) {
     },
   }
 
+  const columns = [
+    {
+      title: '工序ID',
+      dataIndex: 'id',
+      key: 'id',
+    },
+    {
+      title: '工序名',
+      dataIndex: 'flowName',
+      key: 'flowName',
+    },
+    {
+      title: '工序描述说明',
+      dataIndex: 'flowDesc',
+      key: 'flowDesc',
+    },
+    {
+      title: '工序最新价格',
+      dataIndex: 'price',
+      key: 'price',
+    },
+    {
+      title: '创建时间',
+      dataIndex: 'createTime',
+      key: 'createTime',
+      render: text => {
+        return moment(text).format('YYYY-MM-DD HH:mm:SS')
+      },
+    },
+    {
+      title: '修改时间',
+      dataIndex: 'updateTime',
+      key: 'updateTime',
+      render: text => {
+        return moment(text).format('YYYY-MM-DD HH:mm:SS')
+      },
+    },
+    {
+      title: '操作',
+      dataIndex: 'operation',
+      key: 'operation',
+      render: (_, record) => {
+        return (
+          <>
+            <Button type="primary" onClick={() => editRecord(record)} style={{ marginRight: 10 }}>
+              修改
+            </Button>
+            <Button type="primary" onClick={() => deleteRecord([record])}>
+              删除
+            </Button>
+          </>
+        )
+      },
+    },
+  ]
+
   return (
     <Card>
-      <QueryForm queryItems={queryItems} addRecord={addRecord} queryRecord={queryRecord} />
-      {selectedRows.length > 0 && (
-        <Card style={{ margin: '10px 0' }}>
-          <Button onClick={deleteRecord}>删除</Button>
-        </Card>
-      )}
+      <QueryForm
+        ref={formRef}
+        queryItems={queryItems}
+        addRecord={addRecord}
+        queryRecord={queryRecord}
+        deleteRecord={() => deleteRecord(selectedRows)}
+      />
       <Spin tip="努力加载中..." spinning={loading.list}>
-        <Table size="middle" dataSource={list} columns={columns} rowSelection={rowSelection} bordered />
+        <Table size="middle" dataSource={list} columns={columns} rowSelection={rowSelection} bordered rowKey="id" />
       </Spin>
-      <Modal title={`新增${moduleCnName}`} width={800} onCancel={handleCancel} visible={modalVisible} footer={null}>
-        <EditForm addItems={addItems} saveRecord={saveRecord} />
+      <Modal title={`编辑${moduleCnName}`} width={800} onCancel={handleCancel} visible={modalVisible} footer={null}>
+        <EditForm addItems={addItems} record={record} saveRecord={saveRecord} />
       </Modal>
     </Card>
   )
@@ -172,4 +228,5 @@ function Flow({ dispatch, list, loading }) {
 
 export default connect(state => ({
   ...state.flow,
+  userInfo: state.common.userInfo,
 }))(Flow)
