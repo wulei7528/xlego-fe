@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Card, Table, Spin } from 'antd'
 import { connect } from 'dva'
 import moment from 'moment'
@@ -22,16 +22,47 @@ const queryItems = [
 ]
 
 function Price({ dispatch, list, loading }) {
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 10,
+    showSizeChanger: true,
+  })
+  const [queryParams, setQueryParams] = useState({})
+
   useEffect(() => {
     dispatch({
       type: `${moduleName}/fetchList`,
+      payload: {
+        pageNo: pagination.current,
+        pageSize: pagination.pageSize,
+      },
     })
-  }, [dispatch])
+  }, [dispatch, pagination])
 
   function queryRecord(values) {
+    const payload = { ...values, pageNo: 1, pageSize: pagination.pageSize }
+    setQueryParams(payload)
+
     dispatch({
       type: `${moduleName}/fetchList`,
-      payload: values,
+      payload,
+    })
+  }
+
+  function tableChange(pageInfo) {
+    const curPageInfo = { ...pagination, ...pageInfo }
+    setPagination(curPageInfo)
+
+    const payload = {
+      ...queryParams,
+      pageNo: curPageInfo.current,
+      pageSize: curPageInfo.pageSize,
+    }
+    setQueryParams(payload)
+
+    dispatch({
+      type: `${moduleName}/fetchList`,
+      payload,
     })
   }
 
@@ -73,7 +104,7 @@ function Price({ dispatch, list, loading }) {
     <Card>
       <QueryForm queryItems={queryItems} queryRecord={queryRecord} />
       <Spin tip="努力加载中..." spinning={loading.list}>
-        <Table size="middle" dataSource={list} columns={columns} bordered />
+        <Table size="middle" dataSource={list} columns={columns} bordered rowKey="id" onChange={tableChange} pagination={pagination} />
       </Spin>
     </Card>
   )

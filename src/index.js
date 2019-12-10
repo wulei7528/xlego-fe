@@ -17,6 +17,7 @@ app.model(require('./models/flow').default)
 app.model(require('./models/order').default)
 app.model(require('./models/price').default)
 app.model(require('./models/report').default)
+app.model(require('./models/user').default)
 
 // 4. router
 app.router(router)

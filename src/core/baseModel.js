@@ -1,5 +1,4 @@
 import axios from './axios'
-import { CODE } from './constants'
 
 function getNs(type) {
   return type.substring(0, type.indexOf('/'))
@@ -29,11 +28,17 @@ export default {
     },
   },
   effects: {
-    *fetchList(action, { call, put }) {
+    *fetchList(action, { call, put, select }) {
       const ns = getNs(action.type)
+      let params = action.payload
+
+      if (ns !== 'user') {
+        const { companyId } = yield select(state => state.user.list[0] || {})
+        params = { ...action.payload, companyId }
+      }
 
       yield put({ type: 'saveLoading', key: 'list', payload: true })
-      const data = yield call(axios.get, `/api/${ns}`, { params: action.payload })
+      const data = yield call(axios.get, `/api/${ns}`, { params })
       yield put({ type: 'saveList', payload: data.data })
       yield put({ type: 'saveLoading', key: 'list', payload: false })
 

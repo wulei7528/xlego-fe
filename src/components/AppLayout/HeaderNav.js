@@ -1,10 +1,11 @@
 import React, { useState } from 'react'
 import { Row, Col, Icon } from 'antd'
 import { connect } from 'dva'
+import cookies from 'js-cookie'
 
 import './HeaderNav.css'
 
-function HeaderNav({ dispatch, userInfo }) {
+function HeaderNav({ dispatch }) {
   const [collapsed, setCollapsed] = useState(false)
 
   function toggle() {
@@ -21,10 +22,10 @@ function HeaderNav({ dispatch, userInfo }) {
         <Icon className="trigger" type={collapsed ? 'menu-unfold' : 'menu-fold'} onClick={toggle} />
       </Col>
       <Col span={12}>
-        <div className="header_user">{userInfo.name}</div>
+        <div className="header_user">{cookies.get('userName') || '未知用户'}</div>
       </Col>
     </Row>
   )
 }
 
-export default connect(state => ({ ...state.common }))(HeaderNav)
+export default connect()(HeaderNav)
