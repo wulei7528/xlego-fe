@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { Card } from 'antd'
 import { connect } from 'dva'
 import InfoForm from '../../components/Produce/InfoForm'
+import cookies from 'js-cookie'
 
 const moduleName = 'company'
 const moduleCnName = '公司'
@@ -34,12 +35,12 @@ const infoItems = [
   },
 ]
 
-function Company({ dispatch, record }) {
+function Company({ dispatch, record, companyId }) {
   useEffect(() => {
     dispatch({
       type: `${moduleName}/getRecord`,
       payload: {
-        id: 1,
+        id: cookies.get('companyId'),
       },
     })
   }, [dispatch])

@@ -1,4 +1,5 @@
 import axios from './axios'
+import cookies from 'js-cookie'
 
 function getNs(type) {
   return type.substring(0, type.indexOf('/'))
@@ -33,8 +34,8 @@ export default {
       let params = action.payload
 
       if (ns !== 'user') {
-        const { companyId } = yield select(state => state.user.list[0] || {})
-        params = { ...action.payload, companyId }
+        const companyId = cookies.get('companyId')
+        params = { companyId, ...action.payload }
       }
 
       yield put({ type: 'saveLoading', key: 'list', payload: true })
@@ -59,7 +60,10 @@ export default {
       const method = id ? axios.put : axios.post
       const url = id ? `/api/${ns}/${id}` : `/api/${ns}`
 
-      const data = yield call(method, url, action.payload)
+      const companyId = cookies.get('companyId')
+      const params = { companyId, ...action.payload }
+
+      const data = yield call(method, url, params)
 
       return data
     },

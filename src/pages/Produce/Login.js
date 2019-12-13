@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import cookies from 'js-cookie'
-import { Form, Icon, Input, Button, Checkbox } from 'antd'
+import { Form, Icon, Input, Button, Checkbox, message } from 'antd'
 import { connect } from 'dva'
 
 const moduleName = 'user'
@@ -20,7 +20,14 @@ function Login({ form, dispatch }) {
           type: `${moduleName}/fetchList`,
           payload: values,
         }).then(data => {
-          const { userName, companyId } = data
+          const result = data.data || []
+
+          if (result.length === 0) {
+            message.success('用户名或密码错误,请重新登录')
+            return
+          }
+
+          const { companyId, userName } = result[0] || {}
 
           cookies.set('userName', userName, { expires: 1 })
           cookies.set('companyId', companyId, { expires: 1 })
@@ -32,7 +39,7 @@ function Login({ form, dispatch }) {
   }
 
   return (
-    <div style={{ position: 'absolute', top: 0, left: 0, background: '#eee', width: '100%', height: '100%', zIndex: 9999 }}>
+    <div style={{ position: 'absolute', top: 0, left: 0, background: '#eee', width: '100%', height: '100%' }}>
       <Form
         style={{
           position: 'absolute',
