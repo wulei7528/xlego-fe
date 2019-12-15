@@ -92,7 +92,7 @@ const addItems = [
   },
 ]
 
-function Employee({ dispatch, list, record, loading, userInfo }) {
+function Employee({ dispatch, list, record, loading }) {
   const [modalVisible, setModalVisible] = useState(false)
   const [selectedRows, setSelectedRows] = useState([])
   const [pagination, setPagination] = useState({
@@ -160,10 +160,7 @@ function Employee({ dispatch, list, record, loading, userInfo }) {
   function saveRecord(values) {
     dispatch({
       type: `${moduleName}/updateRecord`,
-      payload: {
-        companyId: userInfo.companyId,
-        ...values,
-      },
+      payload: values,
     }).then(() => {
       setModalVisible(false)
       refreshPage()
@@ -303,5 +300,4 @@ function Employee({ dispatch, list, record, loading, userInfo }) {
 
 export default connect(state => ({
   ...state.employee,
-  userInfo: state.common.userInfo,
 }))(Employee)

@@ -63,7 +63,7 @@ const addItems = [
   },
 ]
 
-function Flow({ dispatch, list, record, loading, userInfo }) {
+function Flow({ dispatch, list, record, loading }) {
   const [modalVisible, setModalVisible] = useState(false)
   const [selectedRows, setSelectedRows] = useState([])
   const [pagination, setPagination] = useState({
@@ -131,10 +131,7 @@ function Flow({ dispatch, list, record, loading, userInfo }) {
   function saveRecord(values) {
     dispatch({
       type: `${moduleName}/updateRecord`,
-      payload: {
-        companyId: userInfo.companyId,
-        ...values,
-      },
+      payload: values,
     }).then(() => {
       setModalVisible(false)
       refreshPage()
@@ -270,5 +267,4 @@ function Flow({ dispatch, list, record, loading, userInfo }) {
 
 export default connect(state => ({
   ...state.flow,
-  userInfo: state.common.userInfo,
 }))(Flow)

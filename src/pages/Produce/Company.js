@@ -5,7 +5,6 @@ import InfoForm from '../../components/Produce/InfoForm'
 import cookies from 'js-cookie'
 
 const moduleName = 'company'
-const moduleCnName = '公司'
 
 const infoItems = [
   {
@@ -35,7 +34,7 @@ const infoItems = [
   },
 ]
 
-function Company({ dispatch, record, companyId }) {
+function Company({ dispatch, record }) {
   useEffect(() => {
     dispatch({
       type: `${moduleName}/getRecord`,

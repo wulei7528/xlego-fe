@@ -5,7 +5,7 @@ import moment from 'moment'
 
 import QueryForm from '../../components/Produce/QueryForm'
 import EditForm from '../../components/Produce/EditForm'
-import BatchAddForm from '../../components/Produce/BatchAddForm'
+import BatchOpForm from '../../components/Produce/BatchOpForm'
 
 const moduleName = 'order'
 const moduleCnName = '订单'
@@ -86,7 +86,7 @@ const addItems = [
   },
 ]
 
-function Order({ dispatch, list, record, loading, userInfo }) {
+function Order({ dispatch, list, record, loading }) {
   const [modalVisible, setModalVisible] = useState(false)
   const [batchModalVisible, setBatchModalVisible] = useState(false)
   const [selectedRows, setSelectedRows] = useState([])
@@ -146,10 +146,7 @@ function Order({ dispatch, list, record, loading, userInfo }) {
   function saveRecord(values) {
     dispatch({
       type: `${moduleName}/updateRecord`,
-      payload: {
-        companyId: userInfo.companyId,
-        ...values,
-      },
+      payload: values,
     }).then(() => {
       setModalVisible(false)
     })
@@ -303,8 +300,15 @@ function Order({ dispatch, list, record, loading, userInfo }) {
       <Modal title={`编辑${moduleCnName}`} width={800} onCancel={handleCancel} visible={modalVisible} footer={null}>
         <EditForm addItems={addItems} record={record} saveRecord={saveRecord} />
       </Modal>
-      <Modal title={`批量新增${moduleCnName}`} width={880} onCancel={handleBatchCancel} visible={batchModalVisible} footer={null}>
-        <BatchAddForm addItems={addItems} saveRecord={saveRecord} />
+      <Modal
+        title={`批量修改${moduleCnName}`}
+        width={1000}
+        style={{ top: 30 }}
+        onCancel={handleBatchCancel}
+        visible={batchModalVisible}
+        footer={null}
+      >
+        <BatchOpForm addItems={addItems} saveRecord={saveRecord} />
       </Modal>
     </Card>
   )
@@ -312,5 +316,4 @@ function Order({ dispatch, list, record, loading, userInfo }) {
 
 export default connect(state => ({
   ...state.order,
-  userInfo: state.common.userInfo,
 }))(Order)

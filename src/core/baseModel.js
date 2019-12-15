@@ -59,9 +59,12 @@ export default {
       const { id } = action.payload
       const method = id ? axios.put : axios.post
       const url = id ? `/api/${ns}/${id}` : `/api/${ns}`
+      let params = action.payload
 
-      const companyId = cookies.get('companyId')
-      const params = { companyId, ...action.payload }
+      if (ns !== 'company') {
+        const companyId = cookies.get('companyId')
+        params = { companyId, ...action.payload }
+      }
 
       const data = yield call(method, url, params)
 

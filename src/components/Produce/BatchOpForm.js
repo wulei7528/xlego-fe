@@ -1,17 +1,24 @@
 import React, { useEffect, useState } from 'react'
-import { Form, Button, Table, Row } from 'antd'
+import { Form, Button, Table, Row, List } from 'antd'
+import { connect } from 'dva'
 
 import { generateFormItem } from '../../utils/form'
 
 const { Item: FormItem } = Form
 
-function BatchAddForm({ form, addItems = [], dataSource, saveRecord }) {
+function BatchOpForm({ form, dispatch, addItems = [], employeeList = [], saveRecord }) {
   const [batchData, setBatchData] = useState([])
   const { getFieldDecorator } = form
 
   useEffect(() => {
-    setBatchData(dataSource || [])
-  }, [dataSource])
+    dispatch({
+      type: 'employee/fetchList',
+      payload: {
+        pageNo: 1,
+        pageSize: 9999,
+      },
+    })
+  }, [dispatch])
 
   function save() {
     form.validateFields(err => {
@@ -66,7 +73,7 @@ function BatchAddForm({ form, addItems = [], dataSource, saveRecord }) {
 
   return (
     <div>
-      <Row style={{ marginBottom: 10 }}>
+      <Row>
         <Button onClick={handleAdd} type="primary" style={{ marginRight: 16 }}>
           添加一行
         </Button>
@@ -75,9 +82,14 @@ function BatchAddForm({ form, addItems = [], dataSource, saveRecord }) {
         </Button>
         <Button onClick={reset}>重置</Button>
       </Row>
-      <Table size="middle" bordered dataSource={batchData} columns={columns} pagination={false} />
+      <Row style={{ height: 380, margin: 5, width: 100, overflowY: 'auto' }}>
+        <List size="small" header={'选择员工'} dataSource={employeeList} renderItem={item => <List.Item>{item.employeeName}</List.Item>} />
+      </Row>
+      {/* <Table size="middle" bordered dataSource={batchData} columns={columns} pagination={false} /> */}
     </div>
   )
 }
 
-export default Form.create()(BatchAddForm)
+export default connect(state => ({
+  employeeList: state.employee.list,
+}))(Form.create()(BatchOpForm))
