@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Form, Button, Table, Row, List } from 'antd'
+import { Form, Button, Card, Table, Row, List } from 'antd'
 import { connect } from 'dva'
 
 import { generateFormItem } from '../../utils/form'
@@ -82,10 +82,15 @@ function BatchOpForm({ form, dispatch, addItems = [], employeeList = [], saveRec
         </Button>
         <Button onClick={reset}>重置</Button>
       </Row>
-      <Row style={{ height: 380, margin: 5, width: 100, overflowY: 'auto' }}>
-        <List size="small" header={'选择员工'} dataSource={employeeList} renderItem={item => <List.Item>{item.employeeName}</List.Item>} />
-      </Row>
-      {/* <Table size="middle" bordered dataSource={batchData} columns={columns} pagination={false} /> */}
+      <div style={{ marginTop: 10, height: 350 }}>
+        <Card size="small" title="选择员工" style={{ height: '100%', overflow: 'auto', float: 'left' }}>
+          <List size="small" dataSource={employeeList} renderItem={item => <List.Item>{item.employeeName}</List.Item>} />
+          <el-cascader-panel options="options"></el-cascader-panel>
+        </Card>
+        <Card size="small" title="订单列表" style={{ height: '100%', overflow: 'auto' }}>
+          {/* <Table size="middle" bordered dataSource={batchData} columns={columns} pagination={false} /> */}
+        </Card>
+      </div>
     </div>
   )
 }
