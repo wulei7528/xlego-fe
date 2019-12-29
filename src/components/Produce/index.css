@@ -1,3 +1,14 @@
 .horizontal input {
   width: 260px;
 }
+
+.batch-part {
+  height: 100%;
+  overflow: auto;
+  display: inline-block;
+  margin-right: 10px;
+}
+
+.row-selected {
+  background-color: #a6e8fc;
+}

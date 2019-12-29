@@ -6,13 +6,14 @@ const { RangePicker } = DatePicker
 const { Group: RadioGroup } = Radio
 
 export function generateFormItem(item, options = {}) {
-  const { itemProps, handleChange } = options
+  const { itemProps } = options
   const props = { ...itemProps, ...item.props }
+  const { type, placeholder, handleChange } = item
 
-  if (item.type === 'input') {
+  if (type === 'input') {
     return (
       <Input
-        placeholder={item.placeholder}
+        placeholder={placeholder}
         {...props}
         onChange={e => {
           typeof handleChange === 'function' && handleChange(e.target.value)
@@ -21,10 +22,10 @@ export function generateFormItem(item, options = {}) {
     )
   }
 
-  if (item.type === 'select') {
+  if (type === 'select') {
     return (
       <Select
-        placeholder={item.placeholder}
+        placeholder={placeholder}
         style={{ width: '160px' }}
         {...props}
         onChange={value => {
@@ -40,10 +41,10 @@ export function generateFormItem(item, options = {}) {
     )
   }
 
-  if (item.type === 'radio') {
+  if (type === 'radio') {
     return (
       <RadioGroup
-        placeholder={item.placeholder}
+        placeholder={placeholder}
         {...props}
         onChange={e => {
           typeof handleChange === 'function' && handleChange(e.target.value)
@@ -58,7 +59,7 @@ export function generateFormItem(item, options = {}) {
     )
   }
 
-  if (item.type === 'rangepicker') {
+  if (type === 'rangepicker') {
     return (
       <RangePicker
         {...props}

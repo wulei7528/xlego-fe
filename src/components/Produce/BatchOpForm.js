@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Form, Button, Card, Table, Row, List } from 'antd'
+import { Form, Card, Table, Button } from 'antd'
 import { connect } from 'dva'
 
 import { generateFormItem } from '../../utils/form'
@@ -8,6 +8,8 @@ const { Item: FormItem } = Form
 
 function BatchOpForm({ form, dispatch, addItems = [], employeeList = [], saveRecord }) {
   const [batchData, setBatchData] = useState([])
+  const [curEmployee, setCurEmployee] = useState('请选择员工后查看')
+  const [rowIndex, setRowIndex] = useState(null)
   const { getFieldDecorator } = form
 
   useEffect(() => {
@@ -18,6 +20,8 @@ function BatchOpForm({ form, dispatch, addItems = [], employeeList = [], saveRec
         pageSize: 9999,
       },
     })
+
+    setRowIndex(null)
   }, [dispatch])
 
   function save() {
@@ -71,24 +75,62 @@ function BatchOpForm({ form, dispatch, addItems = [], employeeList = [], saveRec
     render: (text, record, index) => generateItem(item, text, index),
   }))
 
+  const employeeColumns = [
+    {
+      title: '选择员工',
+      dataIndex: 'employeeName',
+      key: 'employeeName',
+    },
+  ]
+
+  // 选中行
+  function onRow(record) {
+    return {
+      onClick: () => {
+        setRowIndex(record.id)
+        setCurEmployee(record.employeeName)
+
+        dispatch({
+          type: 'order/fetchList',
+          payload: {
+            employeeId: record.id,
+            pageNo: 1,
+            pageSize: 9999,
+          },
+        })
+      },
+    }
+  }
+
+  function setRowClassName(record) {
+    return record.id === rowIndex ? 'row-selected' : ''
+  }
+
   return (
     <div>
-      <Row>
-        <Button onClick={handleAdd} type="primary" style={{ marginRight: 16 }}>
-          添加一行
-        </Button>
-        <Button type="primary" style={{ marginRight: '16px' }} onClick={save}>
-          保存
-        </Button>
-        <Button onClick={reset}>重置</Button>
-      </Row>
-      <div style={{ marginTop: 10, height: 350 }}>
-        <Card size="small" title="选择员工" style={{ height: '100%', overflow: 'auto', float: 'left' }}>
-          <List size="small" dataSource={employeeList} renderItem={item => <List.Item>{item.employeeName}</List.Item>} />
-          <el-cascader-panel options="options"></el-cascader-panel>
-        </Card>
-        <Card size="small" title="订单列表" style={{ height: '100%', overflow: 'auto' }}>
-          {/* <Table size="middle" bordered dataSource={batchData} columns={columns} pagination={false} /> */}
+      <div style={{ height: 350 }}>
+        <Table
+          className="batch-part"
+          size="middle"
+          bordered
+          dataSource={employeeList}
+          columns={employeeColumns}
+          pagination={false}
+          onRow={onRow}
+          rowClassName={setRowClassName}
+          rowKey="id"
+        />
+        <Card
+          size="small"
+          title={
+            <>
+              订单列表[<span style={{ color: 'red' }}>当前员工:{curEmployee}</span>]
+            </>
+          }
+          className="batch-part"
+          style={{ width: 840 }}
+        >
+          <Table size="middle" bordered dataSource={batchData} columns={columns} pagination={false} rowKey="id" />
         </Card>
       </div>
     </div>
