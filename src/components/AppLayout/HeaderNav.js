@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Row, Col, Icon, Menu, Button, Dropdown } from 'antd'
+import { Row, Col, Icon, Menu, Button, Dropdown, Modal } from 'antd'
 import { connect } from 'dva'
 import cookies from 'js-cookie'
 
@@ -16,6 +16,10 @@ function HeaderNav({ dispatch }) {
     })
   }
 
+  function updatePassword(e) {
+    e.preventDefault()
+  }
+
   function logout(e) {
     e.preventDefault()
 
@@ -27,6 +31,11 @@ function HeaderNav({ dispatch }) {
   const menu = (
     <Menu>
       <Menu.Item key="1">
+        <Button type="link" icon="logout" onClick={updatePassword}>
+          修改密码
+        </Button>
+      </Menu.Item>
+      <Menu.Item key="2">
         <Button type="link" icon="logout" onClick={logout}>
           退出登录
         </Button>
@@ -35,18 +44,21 @@ function HeaderNav({ dispatch }) {
   )
 
   return (
-    <Row>
-      <Col span={12}>
-        <Icon className="trigger" type={collapsed ? 'menu-unfold' : 'menu-fold'} onClick={toggle} />
-      </Col>
-      <Col span={12}>
-        <div className="header_user">
-          <Dropdown overlay={menu}>
-            <Button>{cookies.get('userName') || '未知用户'}</Button>
-          </Dropdown>
-        </div>
-      </Col>
-    </Row>
+    <>
+      <Row>
+        <Col span={12}>
+          <Icon className="trigger" type={collapsed ? 'menu-unfold' : 'menu-fold'} onClick={toggle} />
+        </Col>
+        <Col span={12}>
+          <div className="header_user">
+            <Dropdown overlay={menu}>
+              <Button type="link">{cookies.get('userName') || '未知用户'}</Button>
+            </Dropdown>
+          </div>
+        </Col>
+      </Row>
+      <Modal></Modal>
+    </>
   )
 }
 

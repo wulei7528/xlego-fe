@@ -5,7 +5,7 @@ import moment from 'moment'
 
 import QueryForm from '../../components/Produce/QueryForm'
 import EditForm from '../../components/Produce/EditForm'
-import BatchAddForm from '../../components/Produce/BatchAddForm'
+import BatchOpForm from '../../components/Produce/BatchOpForm'
 
 const moduleName = 'order'
 const moduleCnName = '订单'
@@ -28,65 +28,7 @@ const queryItems = [
   },
 ]
 
-const addItems = [
-  {
-    type: 'input',
-    name: 'employeeName',
-    displayName: '车工姓名',
-    options: {
-      rules: [
-        {
-          required: true,
-          message: '请输入车工姓名',
-        },
-      ],
-    },
-  },
-  {
-    type: 'input',
-    name: 'flowName',
-    displayName: '工序名称',
-    options: {
-      rules: [
-        {
-          required: true,
-          message: '请输入工序名称',
-        },
-      ],
-    },
-  },
-  {
-    type: 'input',
-    name: 'size',
-    displayName: '数量',
-    options: {
-      rules: [
-        {
-          required: true,
-          message: '请输入工序数量',
-        },
-      ],
-    },
-  },
-  {
-    type: 'input',
-    name: 'price',
-    displayName: '工序单价',
-    props: {
-      disabled: true,
-    },
-  },
-  {
-    type: 'input',
-    name: 'cost',
-    displayName: '工序费用',
-    props: {
-      disabled: true,
-    },
-  },
-]
-
-function Order({ dispatch, list, record, loading, userInfo }) {
+function Order({ dispatch, list, record, loading, employeeList, flowList }) {
   const [modalVisible, setModalVisible] = useState(false)
   const [batchModalVisible, setBatchModalVisible] = useState(false)
   const [selectedRows, setSelectedRows] = useState([])
@@ -97,6 +39,7 @@ function Order({ dispatch, list, record, loading, userInfo }) {
   })
   const [queryParams, setQueryParams] = useState({})
   const formRef = useRef()
+  const addFormRef = useRef()
 
   useEffect(() => {
     dispatch({
@@ -104,6 +47,22 @@ function Order({ dispatch, list, record, loading, userInfo }) {
       payload: {
         pageNo: pagination.current,
         pageSize: pagination.pageSize,
+      },
+    })
+
+    dispatch({
+      type: `employee/fetchList`,
+      payload: {
+        pageNo: 1,
+        pageSize: 9999,
+      },
+    })
+
+    dispatch({
+      type: `flow/fetchList`,
+      payload: {
+        pageNo: 1,
+        pageSize: 9999,
       },
     })
   }, [dispatch, pagination])
@@ -136,6 +95,10 @@ function Order({ dispatch, list, record, loading, userInfo }) {
   }
 
   function addRecord() {
+    dispatch({
+      type: `${moduleName}/saveRecord`,
+      payload: {},
+    })
     setModalVisible(true)
   }
 
@@ -144,12 +107,19 @@ function Order({ dispatch, list, record, loading, userInfo }) {
   }
 
   function saveRecord(values) {
+    const { flowId, employeeId } = values
+    const flowArr = flowId.split(',')
+    const employeeArr = employeeId.split(',')
+
+    const payload = {
+      ...values,
+      flowId: flowArr[0],
+      employeeId: employeeArr[0],
+    }
+
     dispatch({
       type: `${moduleName}/updateRecord`,
-      payload: {
-        companyId: userInfo.companyId,
-        ...values,
-      },
+      payload,
     }).then(() => {
       setModalVisible(false)
     })
@@ -210,6 +180,23 @@ function Order({ dispatch, list, record, loading, userInfo }) {
     onChange: (_, selectedRows) => {
       setSelectedRows(selectedRows)
     },
+  }
+
+  function handleFlowChange(value) {
+    const form = addFormRef.current
+    const price = parseFloat(value.split(',')[2])
+    const size = parseFloat(form.getFieldValue('size') || 0)
+
+    form.setFieldsValue({ price })
+    form.setFieldsValue({ cost: price * size })
+  }
+
+  function handleSizeChange(value) {
+    const form = addFormRef.current
+    const price = parseFloat(form.getFieldValue('price'))
+    const size = parseFloat(value)
+
+    form.setFieldsValue({ cost: price * size })
   }
 
   const columns = [
@@ -278,6 +265,76 @@ function Order({ dispatch, list, record, loading, userInfo }) {
     },
   ]
 
+  const addItems = [
+    {
+      type: 'select',
+      name: 'employeeId',
+      displayName: '车工姓名',
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '请输入车工姓名',
+          },
+        ],
+      },
+      selectOptions: employeeList.map(item => ({ value: `${item.id},${item.employeeName}`, text: item.employeeName })),
+      props: {
+        showSearch: true,
+        filterOption: (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0,
+      },
+    },
+    {
+      type: 'select',
+      name: 'flowId',
+      displayName: '工序名称',
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '请输入工序名称',
+          },
+        ],
+      },
+      selectOptions: flowList.map(item => ({ value: `${item.id},${item.flowName},${item.price}`, text: item.flowName })),
+      handleChange: handleFlowChange,
+      props: {
+        showSearch: true,
+        filterOption: (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0,
+      },
+    },
+    {
+      type: 'input',
+      name: 'size',
+      displayName: '数量',
+      options: {
+        rules: [
+          {
+            required: true,
+            message: '请输入工序数量',
+          },
+        ],
+      },
+      handleChange: handleSizeChange,
+    },
+    {
+      type: 'input',
+      name: 'price',
+      displayName: '工序单价',
+      props: {
+        disabled: true,
+      },
+    },
+    {
+      type: 'input',
+      name: 'cost',
+      displayName: '工序费用',
+      props: {
+        disabled: true,
+      },
+    },
+  ]
+
   return (
     <Card>
       <QueryForm
@@ -301,10 +358,17 @@ function Order({ dispatch, list, record, loading, userInfo }) {
         />
       </Spin>
       <Modal title={`编辑${moduleCnName}`} width={800} onCancel={handleCancel} visible={modalVisible} footer={null}>
-        <EditForm addItems={addItems} record={record} saveRecord={saveRecord} />
+        <EditForm addItems={addItems} record={record} saveRecord={saveRecord} ref={addFormRef} />
       </Modal>
-      <Modal title={`批量新增${moduleCnName}`} width={880} onCancel={handleBatchCancel} visible={batchModalVisible} footer={null}>
-        <BatchAddForm addItems={addItems} saveRecord={saveRecord} />
+      <Modal
+        title={`批量修改${moduleCnName}`}
+        width={1000}
+        style={{ top: 30 }}
+        onCancel={handleBatchCancel}
+        visible={batchModalVisible}
+        footer={null}
+      >
+        <BatchOpForm addItems={addItems} saveRecord={saveRecord} />
       </Modal>
     </Card>
   )
@@ -312,5 +376,6 @@ function Order({ dispatch, list, record, loading, userInfo }) {
 
 export default connect(state => ({
   ...state.order,
-  userInfo: state.common.userInfo,
+  employeeList: state.employee.list,
+  flowList: state.flow.list,
 }))(Order)

@@ -6,7 +6,6 @@ import moment from 'moment'
 import QueryForm from '../../components/Produce/QueryForm'
 
 const moduleName = 'price'
-const moduleCnName = '价格'
 
 const queryItems = [
   {

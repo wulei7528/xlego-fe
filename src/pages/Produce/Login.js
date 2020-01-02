@@ -1,15 +1,23 @@
-import React, { useEffect } from 'react'
+import React, { useState } from 'react'
 import cookies from 'js-cookie'
 import { Form, Icon, Input, Button, Checkbox, message } from 'antd'
 import { connect } from 'dva'
 
 const moduleName = 'user'
 function Login({ form, dispatch }) {
+  const rememberFlag = localStorage.getItem('rememberFlag') || false
+  const [remember, setRemember] = useState(rememberFlag)
   const { getFieldDecorator } = form
 
-  useEffect(() => {
-    // 判断用户是否登录
-  }, [])
+  function handleRemember() {
+    if (remember) {
+      localStorage.removeItem('rememberFlag')
+    } else {
+      localStorage.setItem('rememberFlag', true)
+    }
+
+    setRemember(!remember)
+  }
 
   function handleSubmit(e) {
     e.preventDefault()
@@ -28,6 +36,11 @@ function Login({ form, dispatch }) {
           }
 
           const { companyId, userName } = result[0] || {}
+
+          if (remember) {
+            localStorage.setItem('userName', userName)
+            localStorage.setItem('password', values.password)
+          }
 
           cookies.set('userName', userName, { expires: 1 })
           cookies.set('companyId', companyId, { expires: 1 })
@@ -54,16 +67,20 @@ function Login({ form, dispatch }) {
         <h2 style={{ textAlign: 'center' }}>工厂生产管理系统1.0</h2>
         <Form.Item>
           {getFieldDecorator('userName', {
+            initialValue: localStorage.getItem('userName'),
             rules: [{ required: true, message: '请输入用户名!' }],
           })(<Input prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />} placeholder="用户名" />)}
         </Form.Item>
         <Form.Item>
           {getFieldDecorator('password', {
+            initialValue: localStorage.getItem('password'),
             rules: [{ required: true, message: '请输入密码!' }],
           })(<Input prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />} type="password" placeholder="密码" />)}
         </Form.Item>
         <Form.Item>
-          <Checkbox>记住我</Checkbox>
+          <Checkbox checked={remember} onClick={handleRemember}>
+            记住我
+          </Checkbox>
           <Button type="primary" className="login-form-button" onClick={handleSubmit}>
             登录
           </Button>
