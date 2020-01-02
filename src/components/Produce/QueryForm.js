@@ -30,11 +30,18 @@ function QueryForm({ form, queryItems = [], queryRecord, addRecord, batchAddReco
     },
   ]
 
+  const itemCommonProps = {
+    onBlur: e => {
+      form.setFieldsValue({ [e.target.id]: e.target.value.trim() })
+    },
+  }
+
   return (
     <CommonForm
       layout="inline"
       form={form}
       formItems={queryItems}
+      itemCommonProps={itemCommonProps}
       renderTailPart={() => (
         <div>
           {formButtons.map(button => (

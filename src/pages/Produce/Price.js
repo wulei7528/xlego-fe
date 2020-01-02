@@ -11,7 +11,7 @@ const moduleCnName = '价格'
 const queryItems = [
   {
     type: 'input',
-    name: 'id',
+    name: 'flowId',
     displayName: '工序ID',
   },
   {
@@ -69,8 +69,8 @@ function Price({ dispatch, list, loading }) {
   const columns = [
     {
       title: '工序ID',
-      dataIndex: 'id',
-      key: 'id',
+      dataIndex: 'flowId',
+      key: 'flowId',
     },
     {
       title: '工序名称',
