@@ -108,13 +108,11 @@ function Order({ dispatch, list, record, loading, employeeList, flowList }) {
 
   function saveRecord(values) {
     const { flowId, employeeId } = values
-    const flowArr = flowId.split(',')
-    const employeeArr = employeeId.split(',')
 
     const payload = {
       ...values,
-      flowId: flowArr[0],
-      employeeId: employeeArr[0],
+      flowId,
+      employeeId,
     }
 
     dispatch({
@@ -122,7 +120,19 @@ function Order({ dispatch, list, record, loading, employeeList, flowList }) {
       payload,
     }).then(() => {
       setModalVisible(false)
+      refreshPage()
     })
+  }
+
+  function refreshPage() {
+    dispatch({
+      type: `${moduleName}/fetchList`,
+    })
+    dispatch({
+      type: `${moduleName}/saveRecord`,
+      payload: {},
+    })
+    formRef.current.resetFields()
   }
 
   function editRecord(record) {
@@ -184,7 +194,10 @@ function Order({ dispatch, list, record, loading, employeeList, flowList }) {
 
   function handleFlowChange(value) {
     const form = addFormRef.current
-    const price = parseFloat(value.split(',')[2])
+    const flowId = value
+    const flow = flowList.find(item => item.id === flowId)
+
+    const price = parseFloat(flow.price)
     const size = parseFloat(form.getFieldValue('size') || 0)
 
     form.setFieldsValue({ price })
@@ -278,7 +291,7 @@ function Order({ dispatch, list, record, loading, employeeList, flowList }) {
           },
         ],
       },
-      selectOptions: employeeList.map(item => ({ value: `${item.id},${item.employeeName}`, text: item.employeeName })),
+      selectOptions: employeeList.map(item => ({ value: item.id, text: item.employeeName })),
       props: {
         showSearch: true,
         filterOption: (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0,
@@ -296,7 +309,7 @@ function Order({ dispatch, list, record, loading, employeeList, flowList }) {
           },
         ],
       },
-      selectOptions: flowList.map(item => ({ value: `${item.id},${item.flowName},${item.price}`, text: item.flowName })),
+      selectOptions: flowList.map(item => ({ value: item.id, text: item.flowName })),
       handleChange: handleFlowChange,
       props: {
         showSearch: true,
