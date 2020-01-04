@@ -31,7 +31,7 @@ function BatchOrder({ dispatch, flowList }) {
   }
 
   function submitData(data) {
-    dispatch({
+    return dispatch({
       type: `${moduleName}/orderbatch`,
       payload: data,
     })
@@ -49,7 +49,20 @@ function BatchOrder({ dispatch, flowList }) {
       key: 'flowId',
       editable: true,
       inputType: 'select',
+      getDisplayText: record => (flowList.find(item => item.id === record.flowId) || {}).flowName,
       items: flowList.map(item => ({ value: item.id, text: item.flowName })),
+      inputChange: ({ form, record, value, update }) => {
+        const price = (flowList.find(item => item.id === value) || {}).price
+        const cost = record.size * price
+        form.setFieldsValue({ [`${record.id}-price`]: price })
+        form.setFieldsValue({ [`${record.id}-cost`]: cost })
+
+        update(record.id, {
+          flowId: value,
+          price,
+          cost,
+        })
+      },
     },
     {
       title: '工序价格',
@@ -63,6 +76,16 @@ function BatchOrder({ dispatch, flowList }) {
       dataIndex: 'size',
       key: 'size',
       editable: true,
+      inputChange: ({ form, record, value, update }) => {
+        const size = value >= 0 ? value : 0
+        const cost = size * record.price
+        form.setFieldsValue({ [`${record.id}-cost`]: cost })
+
+        update(record.id, {
+          size,
+          cost,
+        })
+      },
     },
     {
       title: '工序费用',

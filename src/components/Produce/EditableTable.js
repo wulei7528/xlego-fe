@@ -1,5 +1,5 @@
 import React from 'react'
-import { Table, Input, Select, Form, Popconfirm, Button } from 'antd'
+import { Table, Input, Select, Form, Popconfirm, Button, message } from 'antd'
 
 const { Option } = Select
 const EditableContext = React.createContext()
@@ -28,7 +28,7 @@ class EditableCell extends React.Component {
 
   renderCell = form => {
     const { getFieldDecorator } = form
-    const { editing, dataIndex, title, inputType, record, index, children, inputChange, ...restProps } = this.props
+    const { editing, dataIndex, title, inputType, record, index, children, inputChange, displayText, ...restProps } = this.props
 
     return (
       <td {...restProps}>
@@ -45,7 +45,7 @@ class EditableCell extends React.Component {
             })(this.getInput({ inputChange }))}
           </Form.Item>
         ) : (
-          children
+          displayText || children
         )}
       </td>
     )
@@ -59,7 +59,7 @@ class EditableCell extends React.Component {
 class EditableTable extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { data: [], editingId: '', props, edit: false }
+    this.state = { data: [], props, edit: false }
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -79,56 +79,25 @@ class EditableTable extends React.Component {
 
   startEdit = () => {
     if (this.state.edit) {
-      this.props.submitData(this.state.data)
-    }
-
-    this.setState({ edit: !this.state.edit })
-  }
-
-  cancel = () => {
-    this.setState({ editingId: '' })
-  }
-
-  save(form, id) {
-    form.validateFields((error, row) => {
-      if (error) {
-        return
-      }
-      console.log(row)
-
-      const retData = []
-      Object.keys(row).forEach(key => {
-        const keys = key.split('-')
-        const [id, field] = keys
-        const item = retData.find(d => d.id === id)
-
-        if (item) {
-          item[field] = row[key]
-        } else {
-          retData.push({ [field]: row[key] })
+      this.props.form.validateFields((error, value) => {
+        if (error) {
+          alert('字段存在错误', error)
+          return
         }
+
+        this.props.submitData(this.state.data).then(data => {
+          console.log(data)
+          if (!data.code) {
+            message.success('保存成功')
+            this.setState({ edit: !this.state.edit })
+          } else {
+            message.error('保存失败')
+          }
+        })
       })
-
-      console.log(retData)
-
-      // const newData = [...this.state.data]
-      // const index = newData.findIndex(item => id === item.id)
-      // if (index > -1) {
-      //   const item = newData[index]
-      //   newData.splice(index, 1, {
-      //     ...item,
-      //     ...row,
-      //   })
-      //   this.setState({ data: newData, editingId: '' })
-      // } else {
-      //   newData.push(row)
-      //   this.setState({ data: newData, editingId: '' })
-      // }
-    })
-  }
-
-  edit(id) {
-    this.setState({ editingId: id })
+    } else {
+      this.setState({ edit: !this.state.edit })
+    }
   }
 
   update(id, key, value) {
@@ -138,12 +107,28 @@ class EditableTable extends React.Component {
       const item = newData[index]
       newData.splice(index, 1, {
         ...item,
-        key: value,
+        [key]: value,
       })
-      this.setState({ data: newData, editingId: '' })
+      this.setState({ data: newData })
     } else {
       newData.push({})
-      this.setState({ data: newData, editingId: '' })
+      this.setState({ data: newData })
+    }
+  }
+
+  updateKeyValues(id, keyValues) {
+    const newData = [...this.state.data]
+    const index = newData.findIndex(item => id === item.id)
+    if (index > -1) {
+      const item = newData[index]
+      newData.splice(index, 1, {
+        ...item,
+        ...keyValues,
+      })
+      this.setState({ data: newData })
+    } else {
+      newData.push({})
+      this.setState({ data: newData })
     }
   }
 
@@ -168,38 +153,21 @@ class EditableTable extends React.Component {
           editing: this.state.edit,
           items: col.items,
           disabled: col.disabled || false,
+          displayText: col.getDisplayText && col.getDisplayText(record),
           inputChange: value => {
-            this.update(record.id, col.dataIndex, value)
+            if (col.inputChange) {
+              col.inputChange({
+                form: this.props.form,
+                record,
+                value,
+                update: this.updateKeyValues.bind(this),
+              })
+            } else {
+              this.update(record.id, col.dataIndex, value)
+            }
           },
         }),
       }
-    })
-
-    columns.push({
-      title: '操作',
-      dataIndex: 'operation',
-      render: (text, record) => {
-        const { editingId } = this.state
-        const editable = this.state.edit
-        return editable ? (
-          <span>
-            <EditableContext.Consumer>
-              {form => (
-                <a onClick={() => this.save(form, record.id)} style={{ marginRight: 8 }}>
-                  保存
-                </a>
-              )}
-            </EditableContext.Consumer>
-            <Popconfirm title="Sure to cancel?" onConfirm={() => this.cancel(record.id)}>
-              <a>取消</a>
-            </Popconfirm>
-          </span>
-        ) : (
-          <a disabled={editingId !== ''} onClick={() => this.edit(record.id)}>
-            修改
-          </a>
-        )
-      },
     })
 
     return (
