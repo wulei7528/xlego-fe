@@ -2,8 +2,9 @@ import React from 'react'
 import { Form, Button } from 'antd'
 
 import CommonForm from './CommonForm'
+import './index.css'
 
-function QueryForm({ form, queryItems = [], queryRecord, addRecord, batchAddRecord, deleteRecord }) {
+function QueryForm({ form, queryItems = [], queryRecord, addRecord, batchRecord, deleteRecord }) {
   function query() {
     form.validateFields((err, values) => {
       if (err) {
@@ -54,14 +55,14 @@ function QueryForm({ form, queryItems = [], queryRecord, addRecord, batchAddReco
               新增
             </Button>
           )}
-          {batchAddRecord && (
-            <Button type="primary" style={{ marginRight: 16 }} onClick={batchAddRecord}>
-              批量新增
+          {batchRecord && (
+            <Button className="btn-orange" style={{ marginRight: 16 }} onClick={batchRecord}>
+              批量管理
             </Button>
           )}
           {deleteRecord && (
             <Button type="danger" style={{ marginRight: 16 }} onClick={deleteRecord}>
-              删除
+              批量删除
             </Button>
           )}
         </div>

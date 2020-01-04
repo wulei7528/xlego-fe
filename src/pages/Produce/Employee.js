@@ -92,7 +92,7 @@ const addItems = [
   },
 ]
 
-function Employee({ dispatch, list, record, loading }) {
+function Employee({ dispatch, list, record, loading, pageRole, batchOrder }) {
   const [modalVisible, setModalVisible] = useState(false)
   const [selectedRows, setSelectedRows] = useState([])
   const [pagination, setPagination] = useState({
@@ -235,50 +235,70 @@ function Employee({ dispatch, list, record, loading }) {
       dataIndex: 'telephone',
       key: 'telephone',
     },
-    {
-      title: '创建时间',
-      dataIndex: 'createTime',
-      key: 'createTime',
-      render: text => {
-        return moment(text).format('YYYY-MM-DD HH:mm:SS')
-      },
-    },
-    {
-      title: '修改时间',
-      dataIndex: 'updateTime',
-      key: 'updateTime',
-      render: text => {
-        return moment(text).format('YYYY-MM-DD HH:mm:SS')
-      },
-    },
-    {
+  ]
+
+  const queryFormProps = {}
+
+  if (pageRole !== 'order') {
+    queryFormProps.addRecord = addRecord
+    queryFormProps.deleteRecord = () => deleteRecord(selectedRows)
+    columns.push(
+      ...[
+        {
+          title: '创建时间',
+          dataIndex: 'createTime',
+          key: 'createTime',
+          render: text => {
+            return moment(text).format('YYYY-MM-DD HH:mm:SS')
+          },
+        },
+        {
+          title: '修改时间',
+          dataIndex: 'updateTime',
+          key: 'updateTime',
+          render: text => {
+            return moment(text).format('YYYY-MM-DD HH:mm:SS')
+          },
+        },
+        {
+          title: '操作',
+          dataIndex: 'operation',
+          key: 'operation',
+          render: (_, record) => {
+            return (
+              <>
+                <Button type="primary" onClick={() => editRecord(record)} style={{ marginRight: 10 }}>
+                  修改
+                </Button>
+                <Button type="primary" onClick={() => deleteRecord([record])}>
+                  删除
+                </Button>
+              </>
+            )
+          },
+        },
+      ]
+    )
+  } else {
+    columns.push({
       title: '操作',
       dataIndex: 'operation',
       key: 'operation',
       render: (_, record) => {
         return (
           <>
-            <Button type="primary" onClick={() => editRecord(record)} style={{ marginRight: 10 }}>
-              修改
-            </Button>
-            <Button type="primary" onClick={() => deleteRecord([record])}>
-              删除
+            <Button type="primary" onClick={() => batchOrder(record)} style={{ marginRight: 10 }}>
+              管理订单
             </Button>
           </>
         )
       },
-    },
-  ]
+    })
+  }
 
   return (
     <Card>
-      <QueryForm
-        ref={formRef}
-        queryItems={queryItems}
-        addRecord={addRecord}
-        queryRecord={queryRecord}
-        deleteRecord={() => deleteRecord(selectedRows)}
-      />
+      <QueryForm ref={formRef} queryItems={queryItems} queryRecord={queryRecord} {...queryFormProps} />
       <Spin tip="努力加载中..." spinning={loading.list}>
         <Table
           size="middle"

@@ -12,3 +12,14 @@
 .row-selected {
   background-color: #a6e8fc;
 }
+
+.btn-orange {
+  background: coral;
+  color: #fff;
+  border: none;
+}
+
+.btn-orange:hover, .btn-orange:focus, .btn-orange:active {
+  background: lightcoral;
+  color: #fff;
+}
