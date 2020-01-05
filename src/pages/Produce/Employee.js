@@ -219,16 +219,19 @@ function Employee({ dispatch, list, record, loading, pageRole, batchOrder }) {
       title: '车工ID',
       dataIndex: 'id',
       key: 'id',
+      width: 120,
     },
     {
       title: '车工姓名',
       dataIndex: 'employeeName',
       key: 'employeeName',
+      width: 220,
     },
     {
       title: '车工角色',
       dataIndex: 'employeeRole',
       key: 'employeeRole',
+      width: 120,
     },
     {
       title: '联系电话',
@@ -267,10 +270,10 @@ function Employee({ dispatch, list, record, loading, pageRole, batchOrder }) {
           render: (_, record) => {
             return (
               <>
-                <Button type="primary" onClick={() => editRecord(record)} style={{ marginRight: 10 }}>
+                <Button type="primary" size="small" onClick={() => editRecord(record)} style={{ marginRight: 10 }}>
                   修改
                 </Button>
-                <Button type="primary" onClick={() => deleteRecord([record])}>
+                <Button type="primary" size="small" onClick={() => deleteRecord([record])}>
                   删除
                 </Button>
               </>
@@ -280,14 +283,15 @@ function Employee({ dispatch, list, record, loading, pageRole, batchOrder }) {
       ]
     )
   } else {
-    columns.push({
-      title: '操作',
+    columns.unshift({
+      title: '订单操作',
       dataIndex: 'operation',
       key: 'operation',
+      width: 100,
       render: (_, record) => {
         return (
           <>
-            <Button type="primary" onClick={() => batchOrder(record)} style={{ marginRight: 10 }}>
+            <Button type="primary" size="small" onClick={() => batchOrder(record)} style={{ marginRight: 10 }}>
               管理订单
             </Button>
           </>
@@ -301,7 +305,7 @@ function Employee({ dispatch, list, record, loading, pageRole, batchOrder }) {
       <QueryForm ref={formRef} queryItems={queryItems} queryRecord={queryRecord} {...queryFormProps} />
       <Spin tip="努力加载中..." spinning={loading.list}>
         <Table
-          size="middle"
+          size="small"
           dataSource={list}
           columns={columns}
           rowSelection={rowSelection}

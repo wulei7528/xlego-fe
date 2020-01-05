@@ -103,7 +103,7 @@ function Price({ dispatch, list, loading }) {
     <Card>
       <QueryForm queryItems={queryItems} queryRecord={queryRecord} />
       <Spin tip="努力加载中..." spinning={loading.list}>
-        <Table size="middle" dataSource={list} columns={columns} bordered rowKey="id" onChange={tableChange} pagination={pagination} />
+        <Table size="small" dataSource={list} columns={columns} bordered rowKey="id" onChange={tableChange} pagination={pagination} />
       </Spin>
     </Card>
   )

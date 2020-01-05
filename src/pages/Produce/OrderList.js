@@ -256,10 +256,10 @@ function OrderList({ dispatch, list, record, loading, employeeList, flowList }) 
       render: (_, record) => {
         return (
           <>
-            <Button type="primary" onClick={() => editRecord(record)} style={{ marginRight: 10 }}>
+            <Button type="primary" size="small" onClick={() => editRecord(record)} style={{ marginRight: 10 }}>
               修改
             </Button>
-            <Button type="primary" onClick={() => deleteRecord([record])}>
+            <Button type="primary" size="small" onClick={() => deleteRecord([record])}>
               删除
             </Button>
           </>
@@ -349,7 +349,7 @@ function OrderList({ dispatch, list, record, loading, employeeList, flowList }) 
       />
       <Spin tip="努力加载中..." spinning={loading.list}>
         <Table
-          size="middle"
+          size="small"
           dataSource={list}
           columns={columns}
           rowSelection={rowSelection}

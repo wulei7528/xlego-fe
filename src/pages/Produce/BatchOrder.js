@@ -1,9 +1,12 @@
 import React, { useState } from 'react'
 import { Modal } from 'antd'
 import { connect } from 'dva'
+import cookies from 'js-cookie'
 
 import Employee from './Employee'
 import EditableTable from '../../components/Produce/EditableTable'
+
+import './index.css'
 
 const moduleName = 'order'
 
@@ -30,11 +33,29 @@ function BatchOrder({ dispatch, flowList }) {
     })
   }
 
-  function submitData(data) {
+  function submitData(data, deletedData) {
+    const companyId = cookies.get('companyId')
+
+    data.forEach(item => {
+      if (item.id.toString().indexOf('new') === 0) {
+        item.id = null
+        item.companyId = companyId
+        item.employeeId = curEmployee.id
+      }
+    })
+
+    const payload = [...data, ...deletedData]
+
+    console.log(payload)
+
     return dispatch({
       type: `${moduleName}/orderbatch`,
-      payload: data,
+      payload,
     })
+  }
+
+  function setClassName(record) {
+    return record.id && record.id.toString().indexOf('new') === 0 ? 'row-add' : ''
   }
 
   const columns = [
@@ -42,6 +63,9 @@ function BatchOrder({ dispatch, flowList }) {
       title: '订单ID',
       dataIndex: 'id',
       key: 'id',
+      render: (_, record) => {
+        return record.id && record.id.toString().indexOf('new') === 0 ? '新订单' : record.id
+      },
     },
     {
       title: '工序名称',
@@ -53,7 +77,8 @@ function BatchOrder({ dispatch, flowList }) {
       items: flowList.map(item => ({ value: item.id, text: item.flowName })),
       inputChange: ({ form, record, value, update }) => {
         const price = (flowList.find(item => item.id === value) || {}).price
-        const cost = record.size * price
+        const size = record.size || 0
+        const cost = size * price
         form.setFieldsValue({ [`${record.id}-price`]: price })
         form.setFieldsValue({ [`${record.id}-cost`]: cost })
 
@@ -78,7 +103,8 @@ function BatchOrder({ dispatch, flowList }) {
       editable: true,
       inputChange: ({ form, record, value, update }) => {
         const size = value >= 0 ? value : 0
-        const cost = size * record.price
+        const price = Number(record.price) || 0
+        const cost = size * price
         form.setFieldsValue({ [`${record.id}-cost`]: cost })
 
         update(record.id, {
@@ -112,7 +138,7 @@ function BatchOrder({ dispatch, flowList }) {
         footer={null}
       >
         <div style={{ height: 400, overflowY: 'auto' }}>
-          <EditableTable size="middle" bordered list={curList} columns={columns} pagination={false} rowKey="id" submitData={submitData} />
+          <EditableTable list={curList} columns={columns} rowKey="id" setClassName={setClassName} submitData={submitData} />
         </div>
       </Modal>
     </>

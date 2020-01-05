@@ -22,10 +22,6 @@ class EditableCell extends React.Component {
     return <Input disabled={disabled} onChange={e => inputChange(e.target.value)} />
   }
 
-  handleChange = v => {
-    console.log(v)
-  }
-
   renderCell = form => {
     const { getFieldDecorator } = form
     const { editing, dataIndex, title, inputType, record, index, children, inputChange, displayText, ...restProps } = this.props
@@ -59,7 +55,7 @@ class EditableCell extends React.Component {
 class EditableTable extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { data: [], props, edit: false }
+    this.state = { data: [], props, edit: false, newCount: 0, deletedData: [] }
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -77,6 +73,17 @@ class EditableTable extends React.Component {
     return null
   }
 
+  addRow = () => {
+    const { newCount } = this.state
+    const newData = { id: `new-${newCount}` }
+
+    this.setState({
+      newCount: newCount + 1,
+      data: [newData, ...this.state.data],
+      edit: true,
+    })
+  }
+
   startEdit = () => {
     if (this.state.edit) {
       this.props.form.validateFields((error, value) => {
@@ -85,11 +92,10 @@ class EditableTable extends React.Component {
           return
         }
 
-        this.props.submitData(this.state.data).then(data => {
-          console.log(data)
+        this.props.submitData(this.state.data, this.state.deletedData).then(data => {
           if (!data.code) {
             message.success('保存成功')
-            this.setState({ edit: !this.state.edit })
+            this.setState({ edit: !this.state.edit, data: data.data })
           } else {
             message.error('保存失败')
           }
@@ -110,10 +116,21 @@ class EditableTable extends React.Component {
         [key]: value,
       })
       this.setState({ data: newData })
-    } else {
-      newData.push({})
-      this.setState({ data: newData })
     }
+  }
+
+  remove(id) {
+    const newData = [...this.state.data]
+    const index = newData.findIndex(item => id === item.id)
+    const deletedData = [...this.state.deletedData]
+
+    newData.splice(index, 1)
+
+    if (id.toString().indexOf('new') !== 0) {
+      deletedData.push({ id, deleted: true })
+    }
+
+    this.setState({ data: newData, deletedData })
   }
 
   updateKeyValues(id, keyValues) {
@@ -130,6 +147,10 @@ class EditableTable extends React.Component {
       newData.push({})
       this.setState({ data: newData })
     }
+  }
+
+  setClassName = (record, index) => {
+    return this.props.setClassName && this.props.setClassName(record, index)
   }
 
   render() {
@@ -170,10 +191,21 @@ class EditableTable extends React.Component {
       }
     })
 
+    columns.push({
+      title: '操作',
+      dataIndex: 'operation',
+      key: 'operation',
+      render: (_, record) => (
+        <Button type="primary" size="small" onClick={() => this.remove(record.id)}>
+          删除
+        </Button>
+      ),
+    })
+
     return (
       <EditableContext.Provider value={this.props.form}>
         <div style={{ marginBottom: 10 }}>
-          <Button type="primary" style={{ marginRight: 16 }}>
+          <Button type="primary" style={{ marginRight: 16 }} onClick={this.addRow}>
             新增一行
           </Button>
           <Button type="primary" onClick={this.startEdit}>
@@ -183,6 +215,7 @@ class EditableTable extends React.Component {
         <Table
           components={components}
           bordered
+          size="small"
           dataSource={this.state.data}
           columns={columns}
           rowClassName="editable-row"
@@ -190,6 +223,7 @@ class EditableTable extends React.Component {
             onChange: this.cancel,
           }}
           rowKey="id"
+          rowClassName={this.setClassName}
         />
       </EditableContext.Provider>
     )

@@ -6,7 +6,7 @@ import BatchOrder from './BatchOrder'
 
 const { TabPane } = Tabs
 
-function Order({ dispatch }) {
+function Order() {
   const [activeKey, setActiveKey] = useState('1')
 
   function tabChange(tabKey) {
