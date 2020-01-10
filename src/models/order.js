@@ -14,6 +14,12 @@ const myModal = {
       const data = yield call(axios.post, `/api/orderbatch`, params)
       return data
     },
+    *batchDelete(action, { call, put, select }) {
+      let params = action.payload
+
+      const data = yield call(axios.delete, `/api/orderbatch`, params)
+      return data
+    },
   },
 }
 

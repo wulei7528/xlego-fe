@@ -1,5 +1,5 @@
 import React from 'react'
-import { Table, Input, Select, Form, Popconfirm, Button, message } from 'antd'
+import { Table, Input, Select, Form, Button, message } from 'antd'
 
 const { Option } = Select
 const EditableContext = React.createContext()
@@ -55,7 +55,7 @@ class EditableCell extends React.Component {
 class EditableTable extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { data: [], props, edit: false, newCount: 0, deletedData: [] }
+    this.state = { data: [], props, edit: false, newCount: 0, deletedData: [], seletedRows: [] }
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -106,7 +106,7 @@ class EditableTable extends React.Component {
     }
   }
 
-  update(id, key, value) {
+  update = (id, key, value) => {
     const newData = [...this.state.data]
     const index = newData.findIndex(item => id === item.id)
     if (index > -1) {
@@ -117,6 +117,24 @@ class EditableTable extends React.Component {
       })
       this.setState({ data: newData })
     }
+  }
+
+  batchDelete = () => {
+    const { selectedRows } = this.state
+
+    if (selectedRows.length === 0) {
+      message.error('请选择至少一条待删除记录')
+    }
+
+    const id = selectedRows.map(row => row.id).join()
+    this.props.batchDelete({ id }).then(data => {
+      if (!data.code) {
+        message.success('删除成功')
+        this.setState({ data: data.data })
+      } else {
+        message.error('删除失败')
+      }
+    })
   }
 
   remove(id) {
@@ -133,7 +151,7 @@ class EditableTable extends React.Component {
     this.setState({ data: newData, deletedData })
   }
 
-  updateKeyValues(id, keyValues) {
+  updateKeyValues = (id, keyValues) => {
     const newData = [...this.state.data]
     const index = newData.findIndex(item => id === item.id)
     if (index > -1) {
@@ -181,7 +199,7 @@ class EditableTable extends React.Component {
                 form: this.props.form,
                 record,
                 value,
-                update: this.updateKeyValues.bind(this),
+                update: this.updateKeyValues,
               })
             } else {
               this.update(record.id, col.dataIndex, value)
@@ -191,16 +209,11 @@ class EditableTable extends React.Component {
       }
     })
 
-    columns.push({
-      title: '操作',
-      dataIndex: 'operation',
-      key: 'operation',
-      render: (_, record) => (
-        <Button type="primary" size="small" onClick={() => this.remove(record.id)}>
-          删除
-        </Button>
-      ),
-    })
+    const rowSelection = {
+      onChange: (_, selectedRows) => {
+        this.setState({ selectedRows })
+      },
+    }
 
     return (
       <EditableContext.Provider value={this.props.form}>
@@ -208,11 +221,15 @@ class EditableTable extends React.Component {
           <Button type="primary" style={{ marginRight: 16 }} onClick={this.addRow}>
             新增一行
           </Button>
-          <Button type="primary" onClick={this.startEdit}>
+          <Button type="primary" style={{ marginRight: 16 }} onClick={this.startEdit}>
             {this.state.edit ? '提交订单' : '修改订单'}
+          </Button>
+          <Button type="danger" onClick={this.batchDelete}>
+            批量删除
           </Button>
         </div>
         <Table
+          rowSelection={rowSelection}
           components={components}
           bordered
           size="small"
@@ -223,7 +240,6 @@ class EditableTable extends React.Component {
             onChange: this.cancel,
           }}
           rowKey="id"
-          rowClassName={this.setClassName}
         />
       </EditableContext.Provider>
     )

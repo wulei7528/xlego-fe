@@ -33,7 +33,7 @@ function BatchOrder({ dispatch, flowList }) {
     })
   }
 
-  function submitData(data, deletedData) {
+  function submitData(data) {
     const companyId = cookies.get('companyId')
 
     data.forEach(item => {
@@ -42,15 +42,21 @@ function BatchOrder({ dispatch, flowList }) {
         item.companyId = companyId
         item.employeeId = curEmployee.id
       }
+
+      delete item.employeeName
+      delete item.flowName
     })
-
-    const payload = [...data, ...deletedData]
-
-    console.log(payload)
 
     return dispatch({
       type: `${moduleName}/orderbatch`,
-      payload,
+      payload: data,
+    })
+  }
+
+  function batchDelete(id) {
+    return dispatch({
+      type: `${moduleName}/orderbatch/`,
+      payload: id,
     })
   }
 
@@ -138,7 +144,7 @@ function BatchOrder({ dispatch, flowList }) {
         footer={null}
       >
         <div style={{ height: 400, overflowY: 'auto' }}>
-          <EditableTable list={curList} columns={columns} rowKey="id" setClassName={setClassName} submitData={submitData} />
+          <EditableTable list={curList} columns={columns} rowKey="id" setClassName={setClassName} submitData={submitData} batchDelete={batchDelete} />
         </div>
       </Modal>
     </>

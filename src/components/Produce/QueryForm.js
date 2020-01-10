@@ -32,7 +32,7 @@ function QueryForm({ form, queryItems = [], queryRecord, addRecord, batchRecord,
   ]
 
   const itemCommonProps = {
-    onBlur: e => {
+    handleBlur: e => {
       form.setFieldsValue({ [e.target.id]: e.target.value.trim() })
     },
   }

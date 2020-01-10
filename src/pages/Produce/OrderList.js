@@ -19,11 +19,22 @@ const queryItems = [
     type: 'input',
     name: 'employeeName',
     displayName: '车工姓名',
+    placeholder: '输入姓名或按字查找',
   },
   {
     type: 'input',
     name: 'flowName',
     displayName: '工序名称',
+  },
+  {
+    type: 'rangepicker',
+    name: 'createTime',
+    displayName: '创建时间',
+  },
+  {
+    type: 'rangepicker',
+    name: 'updateTime',
+    displayName: '修改时间',
   },
 ]
 
@@ -238,7 +249,7 @@ function OrderList({ dispatch, list, record, loading, employeeList, flowList }) 
       dataIndex: 'createTime',
       key: 'createTime',
       render: text => {
-        return moment(text).format('YYYY-MM-DD HH:mm:SS')
+        return moment(text).format('YYYY-MM-DD HH:mm:ss')
       },
     },
     {
@@ -246,7 +257,7 @@ function OrderList({ dispatch, list, record, loading, employeeList, flowList }) 
       dataIndex: 'updateTime',
       key: 'updateTime',
       render: text => {
-        return moment(text).format('YYYY-MM-DD HH:mm:SS')
+        return moment(text).format('YYYY-MM-DD HH:mm:ss')
       },
     },
     {

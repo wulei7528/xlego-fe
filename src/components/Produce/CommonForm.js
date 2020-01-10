@@ -46,7 +46,7 @@ function CommonForm({ form, formItems = [], itemCommonProps, layout = 'horizonta
           <FormItem key={item.name} label={item.displayName} {...formItemLayout}>
             {onlyText && record[item.name]}
             <span style={{ display: onlyText ? 'none' : 'block' }}>
-              {getFieldDecorator(item.name, item.options)(generateFormItem(item, { itemProps: itemCommonProps }))}
+              {getFieldDecorator(item.name, item.options)(generateFormItem(item, { itemCommonProps }))}
             </span>
           </FormItem>
         ))}

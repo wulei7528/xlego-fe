@@ -6,7 +6,7 @@ const { RangePicker } = DatePicker
 const { Group: RadioGroup } = Radio
 
 export function generateFormItem(item, options = {}) {
-  const { itemProps } = options
+  const { itemCommonProps: { handleBlur, ...itemProps } = {} } = options
   const props = { ...itemProps, ...item.props }
   const { type, placeholder, handleChange } = item
 
@@ -17,6 +17,9 @@ export function generateFormItem(item, options = {}) {
         {...props}
         onChange={e => {
           typeof handleChange === 'function' && handleChange(e.target.value)
+        }}
+        onBlur={e => {
+          typeof handleBlur === 'function' && handleBlur(e)
         }}
       />
     )

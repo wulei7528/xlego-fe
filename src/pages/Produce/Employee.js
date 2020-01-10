@@ -300,20 +300,17 @@ function Employee({ dispatch, list, record, loading, pageRole, batchOrder }) {
     })
   }
 
+  const extProps = {}
+
+  if (pageRole !== 'order') {
+    extProps['rowSelection'] = rowSelection
+  }
+
   return (
     <Card>
       <QueryForm ref={formRef} queryItems={queryItems} queryRecord={queryRecord} {...queryFormProps} />
       <Spin tip="努力加载中..." spinning={loading.list}>
-        <Table
-          size="small"
-          dataSource={list}
-          columns={columns}
-          rowSelection={rowSelection}
-          bordered
-          rowKey="id"
-          onChange={tableChange}
-          pagination={pagination}
-        />
+        <Table size="small" bordered rowKey="id" dataSource={list} columns={columns} onChange={tableChange} pagination={pagination} {...extProps} />
       </Spin>
       <Modal title={`编辑${moduleCnName}`} width={800} onCancel={handleCancel} visible={modalVisible} footer={null}>
         <EditForm addItems={addItems} record={record} saveRecord={saveRecord} />
