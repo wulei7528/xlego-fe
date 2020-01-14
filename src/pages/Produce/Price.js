@@ -20,11 +20,12 @@ const queryItems = [
   },
 ]
 
-function Price({ dispatch, list, loading }) {
+function Price({ dispatch, list, pageInfo, loading }) {
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10,
     showSizeChanger: true,
+    showTotal,
   })
   const [queryParams, setQueryParams] = useState({})
 
@@ -37,6 +38,10 @@ function Price({ dispatch, list, loading }) {
       },
     })
   }, [dispatch, pagination])
+
+  function showTotal(total) {
+    return `共 ${total} 条记录`
+  }
 
   function queryRecord(values) {
     const payload = { ...values, pageNo: 1, pageSize: pagination.pageSize }
@@ -103,7 +108,15 @@ function Price({ dispatch, list, loading }) {
     <Card>
       <QueryForm queryItems={queryItems} queryRecord={queryRecord} />
       <Spin tip="努力加载中..." spinning={loading.list}>
-        <Table size="small" dataSource={list} columns={columns} bordered rowKey="id" onChange={tableChange} pagination={pagination} />
+        <Table
+          size="small"
+          dataSource={list}
+          columns={columns}
+          bordered
+          rowKey="id"
+          onChange={tableChange}
+          pagination={{ ...pagination, total: pageInfo.total }}
+        />
       </Spin>
     </Card>
   )

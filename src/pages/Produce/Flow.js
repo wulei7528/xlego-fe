@@ -63,13 +63,14 @@ const addItems = [
   },
 ]
 
-function Flow({ dispatch, list, record, loading }) {
+function Flow({ dispatch, list, pageInfo, record, loading }) {
   const [modalVisible, setModalVisible] = useState(false)
   const [selectedRows, setSelectedRows] = useState([])
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10,
     showSizeChanger: true,
+    showTotal,
   })
   const [queryParams, setQueryParams] = useState({})
   const formRef = useRef()
@@ -171,6 +172,10 @@ function Flow({ dispatch, list, record, loading }) {
     formRef.current.resetFields()
   }
 
+  function showTotal(total) {
+    return `共 ${total} 条记录`
+  }
+
   function handleCancel() {
     setModalVisible(false)
   }
@@ -255,7 +260,7 @@ function Flow({ dispatch, list, record, loading }) {
           bordered
           rowKey="id"
           onChange={tableChange}
-          pagination={pagination}
+          pagination={{ ...pagination, total: pageInfo.total }}
         />
       </Spin>
       <Modal title={`编辑${moduleCnName}`} width={800} onCancel={handleCancel} visible={modalVisible} footer={null}>

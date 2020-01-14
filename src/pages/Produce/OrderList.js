@@ -38,13 +38,14 @@ const queryItems = [
   },
 ]
 
-function OrderList({ dispatch, list, record, loading, employeeList, flowList }) {
+function OrderList({ dispatch, list, pageInfo, record, loading, employeeList, flowList }) {
   const [modalVisible, setModalVisible] = useState(false)
   const [selectedRows, setSelectedRows] = useState([])
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10,
     showSizeChanger: true,
+    showTotal,
   })
   const [queryParams, setQueryParams] = useState({})
   const formRef = useRef()
@@ -140,6 +141,10 @@ function OrderList({ dispatch, list, record, loading, employeeList, flowList }) 
     formRef.current.resetFields()
   }
 
+  function showTotal(total) {
+    return `共 ${total} 条记录`
+  }
+
   function editRecord(record) {
     dispatch({
       type: `${moduleName}/getRecord`,
@@ -157,15 +162,24 @@ function OrderList({ dispatch, list, record, loading, employeeList, flowList }) 
       return
     }
 
+    const id = records.map(item => item.id).join()
+
     Modal.confirm({
       content: `确认要删除${moduleCnName}`,
       onOk: () => {
-        dispatch({
-          type: `${moduleName}/deleteRecord`,
+        return dispatch({
+          type: `${moduleName}/batchDelete`,
           payload: {
-            id: records[0].id,
+            id,
           },
-        }).then(() => refresPage())
+        }).then(data => {
+          if (!data.code) {
+            message.success('删除成功')
+            refresPage()
+          } else {
+            message.error('删除失败')
+          }
+        })
       },
       okText: '确认',
       cancelText: '取消',
@@ -367,7 +381,7 @@ function OrderList({ dispatch, list, record, loading, employeeList, flowList }) 
           bordered
           rowKey="id"
           onChange={tableChange}
-          pagination={pagination}
+          pagination={{ ...pagination, total: pageInfo.total }}
         />
       </Spin>
       <Modal title={`编辑${moduleCnName}`} width={800} onCancel={handleCancel} visible={modalVisible} footer={null}>

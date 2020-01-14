@@ -31,6 +31,10 @@ const queryItems = [
     displayName: '车工角色',
     selectOptions: [
       {
+        text: '全部',
+        value: '',
+      },
+      {
         text: '普通车工',
         value: '普通车工',
       },
@@ -40,7 +44,7 @@ const queryItems = [
       },
     ],
     options: {
-      initialValue: '普通车工',
+      initialValue: '',
     },
   },
 ]
@@ -92,13 +96,14 @@ const addItems = [
   },
 ]
 
-function Employee({ dispatch, list, record, loading, pageRole, batchOrder }) {
+function Employee({ dispatch, list, pageInfo, record, loading, pageRole, batchOrder }) {
   const [modalVisible, setModalVisible] = useState(false)
   const [selectedRows, setSelectedRows] = useState([])
   const [pagination, setPagination] = useState({
     current: 1,
     pageSize: 10,
     showSizeChanger: true,
+    showTotal,
   })
   const [queryParams, setQueryParams] = useState({})
   const formRef = useRef()
@@ -208,6 +213,10 @@ function Employee({ dispatch, list, record, loading, pageRole, batchOrder }) {
     formRef.current.resetFields()
   }
 
+  function showTotal(total) {
+    return `共 ${total} 条记录`
+  }
+
   const rowSelection = {
     onChange: (_, selectedRows) => {
       setSelectedRows(selectedRows)
@@ -310,7 +319,16 @@ function Employee({ dispatch, list, record, loading, pageRole, batchOrder }) {
     <Card>
       <QueryForm ref={formRef} queryItems={queryItems} queryRecord={queryRecord} {...queryFormProps} />
       <Spin tip="努力加载中..." spinning={loading.list}>
-        <Table size="small" bordered rowKey="id" dataSource={list} columns={columns} onChange={tableChange} pagination={pagination} {...extProps} />
+        <Table
+          size="small"
+          bordered
+          rowKey="id"
+          dataSource={list}
+          columns={columns}
+          onChange={tableChange}
+          pagination={{ ...pagination, total: pageInfo.total }}
+          {...extProps}
+        />
       </Spin>
       <Modal title={`编辑${moduleCnName}`} width={800} onCancel={handleCancel} visible={modalVisible} footer={null}>
         <EditForm addItems={addItems} record={record} saveRecord={saveRecord} />

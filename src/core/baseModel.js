@@ -9,6 +9,7 @@ export default {
   namespace: 'default',
   state: {
     list: [],
+    pageInfo: {},
     record: {},
     loading: {},
   },
@@ -18,6 +19,9 @@ export default {
     },
     saveRecord(state, action) {
       return { ...state, record: action.payload }
+    },
+    savePageInfo(state, action) {
+      return { ...state, pageInfo: action.payload }
     },
     saveLoading(state, action) {
       return {
@@ -41,6 +45,7 @@ export default {
       yield put({ type: 'saveLoading', key: 'list', payload: true })
       const data = yield call(axios.get, `/api/${ns}`, { params })
       yield put({ type: 'saveList', payload: data.data })
+      yield put({ type: 'savePageInfo', payload: { pageNo: data.pageNo, pageSize: data.pageSize, total: data.totalCount } })
       yield put({ type: 'saveLoading', key: 'list', payload: false })
 
       return data

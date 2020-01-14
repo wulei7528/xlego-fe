@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Modal } from 'antd'
+import { Modal, message } from 'antd'
 import { connect } from 'dva'
 import cookies from 'js-cookie'
 
@@ -14,6 +14,12 @@ function BatchOrder({ dispatch, flowList }) {
   const [batchModalVisible, setBatchModalVisible] = useState(false)
   const [curEmployee, setCurEmployee] = useState({})
   const [curList, setCurList] = useState([])
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 9999,
+    // showSizeChanger: true,
+    showTotal,
+  })
 
   function handleBatchCancel() {
     setBatchModalVisible(false)
@@ -27,37 +33,79 @@ function BatchOrder({ dispatch, flowList }) {
       type: `${moduleName}/fetchList`,
       payload: {
         employeeId: employee.id,
+        pageNo: pagination.current,
+        pageSize: pagination.pageSize,
       },
     }).then(data => {
       setCurList(data.data || [])
     })
   }
 
+  function tableChange(pageInfo) {
+    const curPageInfo = { ...pagination, ...pageInfo }
+    setPagination(curPageInfo)
+
+    const payload = {
+      employeeId: curEmployee.id,
+      pageNo: curPageInfo.current,
+      pageSize: curPageInfo.pageSize,
+    }
+
+    dispatch({
+      type: `${moduleName}/fetchList`,
+      payload,
+    })
+  }
+
+  function showTotal(total) {
+    return `共 ${total} 条记录`
+  }
+
   function submitData(data) {
     const companyId = cookies.get('companyId')
+    const payload = data.map(item => {
+      const copyItem = { ...item }
 
-    data.forEach(item => {
       if (item.id.toString().indexOf('new') === 0) {
-        item.id = null
-        item.companyId = companyId
-        item.employeeId = curEmployee.id
+        copyItem.id = null
+        copyItem.companyId = companyId
+        copyItem.employeeId = curEmployee.id
       }
 
-      delete item.employeeName
-      delete item.flowName
+      delete copyItem.employeeName
+      delete copyItem.flowName
+
+      return copyItem
     })
 
     return dispatch({
       type: `${moduleName}/orderbatch`,
-      payload: data,
+      payload,
     })
   }
 
-  function batchDelete(id) {
+  function batchDelete(payload) {
     return dispatch({
-      type: `${moduleName}/orderbatch/`,
-      payload: id,
+      type: `${moduleName}/batchDelete`,
+      payload,
     })
+      .then(data => {
+        if (!data.code) {
+          message.success('删除成功')
+        } else {
+          message.error('删除失败')
+        }
+      })
+      .then(() => {
+        dispatch({
+          type: `${moduleName}/fetchList`,
+          payload: {
+            employeeId: curEmployee.id,
+          },
+        }).then(data => {
+          setCurList(data.data || [])
+        })
+      })
   }
 
   function setClassName(record) {
@@ -144,7 +192,16 @@ function BatchOrder({ dispatch, flowList }) {
         footer={null}
       >
         <div style={{ height: 400, overflowY: 'auto' }}>
-          <EditableTable list={curList} columns={columns} rowKey="id" setClassName={setClassName} submitData={submitData} batchDelete={batchDelete} />
+          <EditableTable
+            list={curList}
+            columns={columns}
+            rowKey="id"
+            setClassName={setClassName}
+            submitData={submitData}
+            batchDelete={batchDelete}
+            onChange={tableChange}
+            pagination={pagination}
+          />
         </div>
       </Modal>
     </>

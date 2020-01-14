@@ -55,7 +55,7 @@ class EditableCell extends React.Component {
 class EditableTable extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { data: [], props, edit: false, newCount: 0, deletedData: [], seletedRows: [] }
+    this.state = { data: [], props, edit: false, newCount: 0, seletedRows: [] }
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -63,6 +63,7 @@ class EditableTable extends React.Component {
 
     if (nextProps.list !== props.list) {
       return {
+        edit: false,
         data: nextProps.list,
         props: {
           list: nextProps.list,
@@ -85,24 +86,33 @@ class EditableTable extends React.Component {
   }
 
   startEdit = () => {
-    if (this.state.edit) {
-      this.props.form.validateFields((error, value) => {
+    const { data, edit } = this.state
+    const { form, submitData } = this.props
+
+    if (!data || !data.length) {
+      message.error('请先添加记录再提交')
+
+      return
+    }
+
+    if (edit) {
+      form.validateFields((error, value) => {
         if (error) {
-          alert('字段存在错误', error)
+          message.error('字段存在错误', error)
           return
         }
 
-        this.props.submitData(this.state.data, this.state.deletedData).then(data => {
+        submitData(data).then(data => {
           if (!data.code) {
             message.success('保存成功')
-            this.setState({ edit: !this.state.edit, data: data.data })
+            this.setState({ data: data.data, edit: !edit })
           } else {
             message.error('保存失败')
           }
         })
       })
     } else {
-      this.setState({ edit: !this.state.edit })
+      this.setState({ edit: !edit })
     }
   }
 
@@ -119,36 +129,36 @@ class EditableTable extends React.Component {
     }
   }
 
-  batchDelete = () => {
-    const { selectedRows } = this.state
+  isNewRecord = record => {
+    const { id = 'new' } = record
 
-    if (selectedRows.length === 0) {
-      message.error('请选择至少一条待删除记录')
-    }
-
-    const id = selectedRows.map(row => row.id).join()
-    this.props.batchDelete({ id }).then(data => {
-      if (!data.code) {
-        message.success('删除成功')
-        this.setState({ data: data.data })
-      } else {
-        message.error('删除失败')
-      }
-    })
+    return id.toString().indexOf('new') === 0
   }
 
-  remove(id) {
-    const newData = [...this.state.data]
-    const index = newData.findIndex(item => id === item.id)
-    const deletedData = [...this.state.deletedData]
+  batchRemove = () => {
+    const { selectedRows = [], data } = this.state
+    const deletedRows = selectedRows.filter(row => !this.isNewRecord(row))
 
-    newData.splice(index, 1)
+    if (deletedRows.length === 0) {
+      if (selectedRows.length) {
+        selectedRows.forEach(selRow => {
+          const index = data.find(item => item.id === selRow.id)
 
-    if (id.toString().indexOf('new') !== 0) {
-      deletedData.push({ id, deleted: true })
+          data.splice(index, 1)
+        })
+
+        this.setState({ data })
+
+        return
+      }
+
+      message.error('请选择至少一条待删除记录')
+      return
     }
 
-    this.setState({ data: newData, deletedData })
+    const id = deletedRows.map(row => row.id).join()
+
+    this.props.batchDelete({ id })
   }
 
   updateKeyValues = (id, keyValues) => {
@@ -224,7 +234,7 @@ class EditableTable extends React.Component {
           <Button type="primary" style={{ marginRight: 16 }} onClick={this.startEdit}>
             {this.state.edit ? '提交订单' : '修改订单'}
           </Button>
-          <Button type="danger" onClick={this.batchDelete}>
+          <Button type="danger" onClick={this.batchRemove}>
             批量删除
           </Button>
         </div>
@@ -236,9 +246,8 @@ class EditableTable extends React.Component {
           dataSource={this.state.data}
           columns={columns}
           rowClassName="editable-row"
-          pagination={{
-            onChange: this.cancel,
-          }}
+          pagination={this.props.pagination}
+          onChange={this.props.onChange}
           rowKey="id"
         />
       </EditableContext.Provider>
