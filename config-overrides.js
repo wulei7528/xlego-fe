@@ -11,7 +11,11 @@ const config = override(
     libraryDirectory: 'es',
     style: 'css', // change importing css to less
   }),
-  addWebpackPlugin(new BundleAnalyzerPlugin()),
+  addWebpackPlugin(
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'disabled',
+    })
+  ),
   addWebpackPlugin(new LodashModuleReplacementPlugin()),
   addWebpackPlugin(new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)),
   addBabelPlugin(['lodash']),
