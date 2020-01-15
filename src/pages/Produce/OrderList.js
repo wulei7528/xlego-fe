@@ -130,17 +130,6 @@ function OrderList({ dispatch, list, pageInfo, record, loading, employeeList, fl
     })
   }
 
-  function refreshPage() {
-    dispatch({
-      type: `${moduleName}/fetchList`,
-    })
-    dispatch({
-      type: `${moduleName}/saveRecord`,
-      payload: {},
-    })
-    formRef.current.resetFields()
-  }
-
   function showTotal(total) {
     return `共 ${total} 条记录`
   }
@@ -156,37 +145,32 @@ function OrderList({ dispatch, list, pageInfo, record, loading, employeeList, fl
     })
   }
 
-  function deleteRecord(records) {
+  // 删除(支持批量)
+  function deleteRecord(records = []) {
     if (!records.length) {
       message.error('请选择至少一个删除选项')
       return
     }
 
-    const id = records.map(item => item.id).join()
+    const id = records.map(record => record.id).join()
 
     Modal.confirm({
       content: `确认要删除${moduleCnName}`,
       onOk: () => {
-        return dispatch({
+        dispatch({
           type: `${moduleName}/batchDelete`,
           payload: {
+            type: 4,
             id,
           },
-        }).then(data => {
-          if (!data.code) {
-            message.success('删除成功')
-            refresPage()
-          } else {
-            message.error('删除失败')
-          }
-        })
+        }).then(() => refreshPage())
       },
       okText: '确认',
       cancelText: '取消',
     })
   }
 
-  function refresPage() {
+  function refreshPage() {
     dispatch({
       type: `${moduleName}/fetchList`,
     })

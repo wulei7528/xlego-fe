@@ -83,5 +83,10 @@ export default {
 
       return data
     },
+    *batchDelete(action, { call }) {
+      const data = yield call(axios.delete, `/api/batchdelete`, { data: action.payload })
+
+      return data
+    },
   },
 }

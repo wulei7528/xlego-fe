@@ -139,20 +139,23 @@ function Flow({ dispatch, list, pageInfo, record, loading }) {
     })
   }
 
-  // 删除
-  function deleteRecord(records) {
+  // 删除(支持批量)
+  function deleteRecord(records = []) {
     if (!records.length) {
       message.error('请选择至少一个删除选项')
       return
     }
 
+    const ids = records.map(record => record.id).join()
+
     Modal.confirm({
       content: `确认要删除${moduleCnName}`,
       onOk: () => {
         dispatch({
-          type: `${moduleName}/deleteRecord`,
+          type: `${moduleName}/batchDelete`,
           payload: {
-            id: records[0].id,
+            type: 2,
+            ids,
           },
         }).then(() => refreshPage())
       },

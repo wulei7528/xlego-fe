@@ -156,9 +156,7 @@ class EditableTable extends React.Component {
       return
     }
 
-    const id = deletedRows.map(row => row.id).join()
-
-    this.props.batchDelete({ id })
+    this.props.batchDelete(deletedRows)
   }
 
   updateKeyValues = (id, keyValues) => {

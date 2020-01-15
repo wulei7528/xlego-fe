@@ -9,6 +9,7 @@ import EditableTable from '../../components/Produce/EditableTable'
 import './index.css'
 
 const moduleName = 'order'
+const moduleCnName = '订单'
 
 function BatchOrder({ dispatch, flowList }) {
   const [batchModalVisible, setBatchModalVisible] = useState(false)
@@ -84,28 +85,38 @@ function BatchOrder({ dispatch, flowList }) {
     })
   }
 
-  function batchDelete(payload) {
-    return dispatch({
-      type: `${moduleName}/batchDelete`,
-      payload,
-    })
-      .then(data => {
-        if (!data.code) {
-          message.success('删除成功')
-        } else {
-          message.error('删除失败')
-        }
-      })
-      .then(() => {
+  // 删除(支持批量)
+  function batchDelete(records = []) {
+    if (!records.length) {
+      message.error('请选择至少一个删除选项')
+      return
+    }
+
+    const id = records.map(record => record.id).join()
+
+    Modal.confirm({
+      content: `确认要删除${moduleCnName}`,
+      onOk: () => {
         dispatch({
-          type: `${moduleName}/fetchList`,
+          type: `${moduleName}/batchDelete`,
           payload: {
-            employeeId: curEmployee.id,
+            type: 4,
+            id,
           },
-        }).then(data => {
-          setCurList(data.data || [])
+        }).then(() => {
+          dispatch({
+            type: `${moduleName}/fetchList`,
+            payload: {
+              employeeId: curEmployee.id,
+            },
+          }).then(data => {
+            setCurList(data.data || [])
+          })
         })
-      })
+      },
+      okText: '确认',
+      cancelText: '取消',
+    })
   }
 
   function setClassName(record) {
