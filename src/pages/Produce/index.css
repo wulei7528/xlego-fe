@@ -1,3 +1,7 @@
 .row-add {
   background: rgb(250, 203, 133);
 }
+
+.report-table tr:last-child {
+  font-weight: bold;
+}

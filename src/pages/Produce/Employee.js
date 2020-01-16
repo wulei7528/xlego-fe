@@ -255,24 +255,25 @@ function Employee({ dispatch, list, pageInfo, record, loading, pageRole, batchOr
       title: '车工ID',
       dataIndex: 'id',
       key: 'id',
-      width: 120,
+      width: 100,
     },
     {
       title: '车工姓名',
       dataIndex: 'employeeName',
       key: 'employeeName',
-      width: 220,
+      width: 120,
     },
     {
       title: '车工角色',
       dataIndex: 'employeeRole',
       key: 'employeeRole',
-      width: 120,
+      width: 100,
     },
     {
       title: '联系电话',
       dataIndex: 'telephone',
       key: 'telephone',
+      width: 160,
     },
   ]
 
@@ -284,9 +285,30 @@ function Employee({ dispatch, list, pageInfo, record, loading, pageRole, batchOr
     columns.push(
       ...[
         {
+          title: '性别',
+          dataIndex: 'gender',
+          key: 'gender',
+          width: 60,
+          render: text => {
+            const valueMap = {
+              1: '男',
+              2: '女',
+            }
+
+            return valueMap[text]
+          },
+        },
+        {
+          title: '出生日期',
+          dataIndex: 'birthdate',
+          key: 'birthdate',
+          width: 120,
+        },
+        {
           title: '创建时间',
           dataIndex: 'createTime',
           key: 'createTime',
+          width: 120,
           render: text => {
             return moment(text).format('YYYY-MM-DD HH:mm:SS')
           },
@@ -295,6 +317,7 @@ function Employee({ dispatch, list, pageInfo, record, loading, pageRole, batchOr
           title: '修改时间',
           dataIndex: 'updateTime',
           key: 'updateTime',
+          width: 120,
           render: text => {
             return moment(text).format('YYYY-MM-DD HH:mm:SS')
           },
@@ -303,10 +326,11 @@ function Employee({ dispatch, list, pageInfo, record, loading, pageRole, batchOr
           title: '操作',
           dataIndex: 'operation',
           key: 'operation',
+          width: 150,
           render: (_, record) => {
             return (
               <>
-                <Button type="primary" size="small" onClick={() => editRecord(record)} style={{ marginRight: 10 }}>
+                <Button type="primary" size="small" onClick={() => editRecord(record)} style={{ margin: 5 }}>
                   修改
                 </Button>
                 <Button type="primary" size="small" onClick={() => deleteRecord([record])}>
@@ -334,6 +358,7 @@ function Employee({ dispatch, list, pageInfo, record, loading, pageRole, batchOr
         )
       },
     })
+    columns.push({})
   }
 
   const extProps = {}

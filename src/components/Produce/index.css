@@ -19,7 +19,22 @@
   border: none;
 }
 
-.btn-orange:hover, .btn-orange:focus, .btn-orange:active {
+.btn-green {
+  background: green;
+  color: #fff;
+  border: none;
+}
+
+.btn-orange:hover,
+.btn-orange:focus,
+.btn-orange:active {
   background: lightcoral;
+  color: #fff;
+}
+
+.btn-green:hover,
+.btn-green:focus,
+.btn-green:active {
+  background: rgb(9, 180, 94);
   color: #fff;
 }

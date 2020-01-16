@@ -4,7 +4,7 @@ import { Form, Button } from 'antd'
 import CommonForm from './CommonForm'
 import './index.css'
 
-function QueryForm({ form, queryItems = [], queryRecord, addRecord, batchRecord, deleteRecord }) {
+function QueryForm({ form, queryItems = [], queryRecord, addRecord, batchRecord, deleteRecord, exportExcel }) {
   function query() {
     form.validateFields((err, values) => {
       if (err) {
@@ -12,6 +12,16 @@ function QueryForm({ form, queryItems = [], queryRecord, addRecord, batchRecord,
       }
 
       queryRecord(values)
+    })
+  }
+
+  function handleExport() {
+    form.validateFields((err, values) => {
+      if (err) {
+        return
+      }
+
+      exportExcel(values)
     })
   }
 
@@ -63,6 +73,11 @@ function QueryForm({ form, queryItems = [], queryRecord, addRecord, batchRecord,
           {deleteRecord && (
             <Button type="danger" style={{ marginRight: 16 }} onClick={deleteRecord}>
               批量删除
+            </Button>
+          )}
+          {exportExcel && (
+            <Button className="btn-green" style={{ marginRight: 16 }} onClick={handleExport}>
+              导出Excel
             </Button>
           )}
         </div>

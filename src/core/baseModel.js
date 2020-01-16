@@ -88,5 +88,18 @@ export default {
 
       return data
     },
+    *fetchListAll(action, { call }) {
+      const ns = getNs(action.type)
+      let params = { ...action.payload, pageNo: 1, pageSize: 9999 }
+
+      if (ns !== 'user') {
+        const companyId = cookies.get('companyId')
+        params = { companyId, ...action.payload }
+      }
+
+      const data = yield call(axios.get, `/api/${ns}`, { params })
+
+      return data
+    },
   },
 }
