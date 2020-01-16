@@ -149,7 +149,11 @@ function Flow({ dispatch, list, pageInfo, record, loading }) {
     const ids = records.map(record => record.id).join()
 
     Modal.confirm({
-      content: `确认要删除${moduleCnName}`,
+      content: (
+        <div>
+          确认要删除{moduleCnName}？<div style={{ color: 'red' }}>删除工序操作会影响所有关联的员工订单，请慎重操作！</div>
+        </div>
+      ),
       onOk: () => {
         dispatch({
           type: `${moduleName}/batchDelete`,
@@ -165,9 +169,8 @@ function Flow({ dispatch, list, pageInfo, record, loading }) {
   }
 
   function refreshPage() {
-    dispatch({
-      type: `${moduleName}/fetchList`,
-    })
+    setPagination({ ...pagination, current: 1 })
+
     dispatch({
       type: `${moduleName}/saveRecord`,
       payload: {},

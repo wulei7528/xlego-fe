@@ -45,7 +45,6 @@ export default Form.create({
     const { record = {} } = props
     const result = {}
 
-    console.log(record)
     Object.keys(record).forEach(key => {
       result[key] = Form.createFormField({
         value: record[key],

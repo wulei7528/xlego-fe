@@ -82,6 +82,29 @@ const addItems = [
     },
   },
   {
+    type: 'radio',
+    name: 'gender',
+    displayName: '性别',
+    radioOptions: [
+      {
+        text: '男',
+        value: 1,
+      },
+      {
+        text: '女',
+        value: 2,
+      },
+    ],
+    options: {
+      initialValue: 1,
+    },
+  },
+  {
+    type: 'datepicker',
+    name: 'birthdate',
+    displayName: '出生日期',
+  },
+  {
     type: 'input',
     name: 'telephone',
     displayName: '联系电话',
@@ -163,9 +186,11 @@ function Employee({ dispatch, list, pageInfo, record, loading, pageRole, batchOr
   }
 
   function saveRecord(values) {
+    const payload = { ...values, birthdate: values.birthdate.format('YYYY-MM-DD') }
+
     dispatch({
       type: `${moduleName}/updateRecord`,
-      payload: values,
+      payload,
     }).then(() => {
       setModalVisible(false)
       refreshPage()
@@ -206,9 +231,8 @@ function Employee({ dispatch, list, pageInfo, record, loading, pageRole, batchOr
   }
 
   function refreshPage() {
-    dispatch({
-      type: `${moduleName}/fetchList`,
-    })
+    setPagination({ ...pagination, current: 1 })
+
     dispatch({
       type: `${moduleName}/saveRecord`,
       payload: {},
@@ -317,6 +341,8 @@ function Employee({ dispatch, list, pageInfo, record, loading, pageRole, batchOr
   if (pageRole !== 'order') {
     extProps['rowSelection'] = rowSelection
   }
+
+  record.birthdate = moment(record.birthdate)
 
   return (
     <Card>

@@ -65,6 +65,19 @@ export function generateFormItem(item, options = {}) {
   if (type === 'rangepicker') {
     return (
       <RangePicker
+        format="YYYY-MM-DD"
+        {...props}
+        onChange={dateValue => {
+          typeof handleChange === 'function' && handleChange(dateValue)
+        }}
+      />
+    )
+  }
+
+  if (type === 'datepicker') {
+    return (
+      <DatePicker
+        format="YYYY-MM-DD"
         {...props}
         onChange={dateValue => {
           typeof handleChange === 'function' && handleChange(dateValue)

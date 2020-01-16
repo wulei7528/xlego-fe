@@ -26,16 +26,16 @@ const queryItems = [
     name: 'flowName',
     displayName: '工序名称',
   },
-  {
-    type: 'rangepicker',
-    name: 'createTime',
-    displayName: '创建时间',
-  },
-  {
-    type: 'rangepicker',
-    name: 'updateTime',
-    displayName: '修改时间',
-  },
+  // {
+  //   type: 'rangepicker',
+  //   name: 'createTime',
+  //   displayName: '创建时间',
+  // },
+  // {
+  //   type: 'rangepicker',
+  //   name: 'updateTime',
+  //   displayName: '修改时间',
+  // },
 ]
 
 function OrderList({ dispatch, list, pageInfo, record, loading, employeeList, flowList }) {
@@ -171,9 +171,8 @@ function OrderList({ dispatch, list, pageInfo, record, loading, employeeList, fl
   }
 
   function refreshPage() {
-    dispatch({
-      type: `${moduleName}/fetchList`,
-    })
+    setPagination({ ...pagination, current: 1 })
+
     dispatch({
       type: `${moduleName}/saveRecord`,
       payload: {},
