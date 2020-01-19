@@ -113,7 +113,7 @@ function Price({ dispatch, list, pageInfo, loading }) {
           dataSource={list}
           columns={columns}
           bordered
-          rowKey="id"
+          rowKey="createTime"
           onChange={tableChange}
           pagination={{ ...pagination, total: pageInfo.total }}
         />

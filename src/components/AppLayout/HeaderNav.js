@@ -1,12 +1,56 @@
 import React, { useState } from 'react'
-import { Row, Col, Icon, Menu, Button, Dropdown, Modal } from 'antd'
+import { Row, Col, Icon, Menu, Button, Dropdown, Modal, message } from 'antd'
 import { connect } from 'dva'
 import cookies from 'js-cookie'
 
+import EditForm from '../Produce/EditForm'
 import './HeaderNav.css'
+
+const addItems = [
+  {
+    type: 'password',
+    name: 'password',
+    displayName: '当前密码',
+    options: {
+      rules: [
+        {
+          required: true,
+          message: '请输入当前密码',
+        },
+      ],
+    },
+  },
+  {
+    type: 'password',
+    name: 'tempPassword',
+    displayName: '新密码',
+    options: {
+      rules: [
+        {
+          required: true,
+          message: '请输入新密码',
+        },
+      ],
+    },
+  },
+  {
+    type: 'password',
+    name: 'newPassword',
+    displayName: '确认密码',
+    options: {
+      rules: [
+        {
+          required: true,
+          message: '请再次输入新密码',
+        },
+      ],
+    },
+  },
+]
 
 function HeaderNav({ dispatch }) {
   const [collapsed, setCollapsed] = useState(false)
+  const [pwdModalVisible, setPwdModalVisible] = useState(false)
 
   function toggle() {
     setCollapsed(!collapsed)
@@ -16,8 +60,37 @@ function HeaderNav({ dispatch }) {
     })
   }
 
-  function updatePassword(e) {
-    e.preventDefault()
+  function updatePassword() {
+    setPwdModalVisible(true)
+  }
+
+  function saveRecord(values) {
+    const userName = cookies.get('userName')
+    const payload = { ...values, userName }
+
+    if (payload.tempPassword !== payload.newPassword) {
+      message.error('确认密码和新密码必须一致')
+      return
+    }
+
+    delete payload.tempPassword
+
+    dispatch({
+      type: 'user/savePassword',
+      payload,
+    }).then(data => {
+      if (!data || data.code) {
+        message.error('密码修改失败，请重试')
+        return
+      }
+
+      message.success('密码修改成功')
+      setPwdModalVisible(false)
+    })
+  }
+
+  function handleCancel() {
+    setPwdModalVisible(false)
   }
 
   function logout(e) {
@@ -57,7 +130,9 @@ function HeaderNav({ dispatch }) {
           </div>
         </Col>
       </Row>
-      <Modal></Modal>
+      <Modal title="修改密码" visible={pwdModalVisible} onCancel={handleCancel} footer={null}>
+        <EditForm addItems={addItems} saveRecord={saveRecord} />
+      </Modal>
     </>
   )
 }

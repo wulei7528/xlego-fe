@@ -10,9 +10,11 @@ export function generateFormItem(item, options = {}) {
   const props = { ...itemProps, ...item.props }
   const { type, placeholder, handleChange } = item
 
-  if (type === 'input') {
+  if (type === 'input' || type === 'password') {
+    const inputType = type === 'password' ? { type: 'password' } : {}
     return (
       <Input
+        {...inputType}
         placeholder={placeholder}
         {...props}
         onChange={e => {

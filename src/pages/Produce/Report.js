@@ -195,7 +195,10 @@ function Report({ dispatch, list, pageInfo, loading }) {
         />
       </Spin>
       <div>
-        说明：单元格内容展示为员工 <span style={{ fontWeight: 'bold' }}>工序总件数/总费用</span>
+        <p style={{ marginTop: 10 }}>
+          工序行：统计员工<span style={{ fontWeight: 'bold', marginRight: 20 }}>一个工序下所做订单的总件数/总费用</span>
+          汇总行：统计员工<span style={{ fontWeight: 'bold' }}>做全部订单的总件数/总费用</span>
+        </p>
       </div>
     </Card>
   )

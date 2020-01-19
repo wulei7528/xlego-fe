@@ -26,3 +26,9 @@ export { default as OrderedListOutline } from '@ant-design/icons/lib/outline/Ord
 export { default as ScheduleOutline } from '@ant-design/icons/lib/outline/ScheduleOutline'
 
 export { default as LockOutline } from '@ant-design/icons/lib/outline/LockOutline'
+
+export { default as InfoCircleFill } from '@ant-design/icons/lib/fill/InfoCircleFill'
+
+export { default as CheckCircleFill } from '@ant-design/icons/lib/fill/CheckCircleFill'
+
+export { default as CloseCircleFill } from '@ant-design/icons/lib/fill/CloseCircleFill'

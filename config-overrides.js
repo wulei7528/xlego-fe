@@ -16,7 +16,7 @@ const config = override(
       analyzerMode: 'disabled',
     })
   ),
-  addWebpackPlugin(new LodashModuleReplacementPlugin()),
+  addWebpackPlugin(new LodashModuleReplacementPlugin({ paths: true })),
   addWebpackPlugin(new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)),
   addBabelPlugin(['lodash']),
   // used to minimise bundle size by 500KB

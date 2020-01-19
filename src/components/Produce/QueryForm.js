@@ -71,12 +71,12 @@ function QueryForm({ form, queryItems = [], queryRecord, addRecord, batchRecord,
             </Button>
           )}
           {deleteRecord && (
-            <Button type="danger" style={{ marginRight: 16 }} onClick={deleteRecord}>
+            <Button className="btn-orange" style={{ marginRight: 16 }} onClick={deleteRecord}>
               批量删除
             </Button>
           )}
           {exportExcel && (
-            <Button className="btn-green" style={{ marginRight: 16 }} onClick={handleExport}>
+            <Button className="btn-orange" style={{ marginRight: 16 }} onClick={handleExport}>
               导出Excel
             </Button>
           )}
